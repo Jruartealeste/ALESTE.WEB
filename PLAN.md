@@ -14,9 +14,9 @@ Este archivo es la fuente de verdad operativa del proyecto. Se actualiza marcand
 - [x] `git init` local
 - [x] `.gitignore`
 - [x] Remoto conectado a `github.com/Jruartealeste/ALESTE.WEB`
-- [ ] Autenticación con GitHub resuelta (push funcionando)
+- [x] Autenticación con GitHub resuelta (push funcionando)
 - [x] `PLAN.md` creado
-- [ ] Commit inicial con `CLAUDE.md` original
+- [x] Commit inicial con `CLAUDE.md` original (mergeado con README/gitignore del remoto)
 
 ### Fase 1 — Skill de screenshots
 - [ ] Skill propia para capturar URL arbitraria (live site o dev server local) y guardar en `temporary screenshots/` sin sobreescribir
