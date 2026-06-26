@@ -1,0 +1,45 @@
+---
+const navItems = [
+  { label: 'Inicio', href: '/' },
+  { label: 'Servicios', href: '/servicios' },
+  { label: 'Casos', href: '/casos' },
+  { label: 'Quiénes somos', href: '/quienes-somos' },
+  { label: 'Contacto', href: '/contacto' },
+];
+
+const currentPath = new URL(Astro.request.url).pathname;
+---
+
+<header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm shadow-[0_1px_0_0_rgba(0,0,0,0.06),0_8px_24px_-12px_rgba(247,50,1,0.15)]">
+  <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+    <a
+      href="/"
+      class="text-xl font-bold text-heading transition-[opacity] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:opacity-70 focus-visible:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
+    >
+      ALESTE
+    </a>
+
+    <nav class="hidden items-center gap-8 md:flex">
+      {navItems.map((item) => (
+        <a
+          href={item.href}
+          aria-current={currentPath === item.href ? 'page' : undefined}
+          class:list={[
+            'text-[15px] font-medium transition-[color,transform] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)]',
+            'hover:text-brand hover:-translate-y-px focus-visible:text-brand focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand active:translate-y-0',
+            currentPath === item.href ? 'text-brand' : 'text-body',
+          ]}
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
+
+    <a
+      href="/contacto"
+      class="rounded-full bg-brand px-6 py-2.5 text-[15px] font-medium text-white shadow-[0_4px_14px_-2px_rgba(247,50,1,0.45)] transition-[transform,box-shadow] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-0.5 hover:shadow-[0_8px_20px_-4px_rgba(247,50,1,0.55)] focus-visible:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand active:translate-y-0 active:shadow-[0_2px_8px_-2px_rgba(247,50,1,0.45)]"
+    >
+      Hablemos
+    </a>
+  </div>
+</header>

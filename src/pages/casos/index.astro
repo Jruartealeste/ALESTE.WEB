@@ -1,0 +1,88 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { casos, categorias } from '../../data/casos';
+---
+
+<Layout
+  title="Casos"
+  description="Trabajos de comunicación, branding y campañas que hicimos para nuestros clientes."
+>
+  <section class="mx-auto max-w-6xl px-6 py-20">
+    <h1 class="text-3xl font-bold text-heading">Casos</h1>
+    <p class="mt-4 max-w-2xl text-body">
+      Una selección de trabajos: el desafío de cada cliente, lo que hicimos y el resultado.
+    </p>
+
+    <div class="mt-8 flex flex-wrap gap-3" id="filtros" role="group" aria-label="Filtrar casos por categoría">
+      {categorias.map((categoria, i) => (
+        <button
+          type="button"
+          data-filtro={categoria}
+          aria-pressed={i === 0 ? 'true' : 'false'}
+          class:list={[
+            'filtro-btn rounded-full border px-5 py-2 text-sm font-medium transition-[background-color,color,transform] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand active:translate-y-0',
+            i === 0
+              ? 'border-brand bg-brand text-white shadow-[0_4px_14px_-2px_rgba(247,50,1,0.45)]'
+              : 'border-black/10 text-body hover:border-brand hover:text-brand',
+          ]}
+        >
+          {categoria}
+        </button>
+      ))}
+    </div>
+
+    <div class="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3" id="grilla-casos">
+      {casos.map((caso) => (
+        <a
+          href={`/casos/${caso.slug}`}
+          data-categoria={caso.categoria}
+          class="caso-card group relative block overflow-hidden rounded-2xl shadow-[0_1px_2px_rgba(0,0,0,0.04),0_16px_32px_-16px_rgba(0,0,0,0.25)] transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-1 hover:shadow-[0_4px_8px_rgba(0,0,0,0.06),0_24px_40px_-16px_rgba(247,50,1,0.3)]"
+        >
+          <img
+            src={`https://placehold.co/600x450?text=${encodeURIComponent(caso.cliente)}`}
+            alt={`${caso.cliente} — ${caso.tipoTrabajo}`}
+            class="h-72 w-full object-cover transition-[transform] duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:scale-105"
+            loading="lazy"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent mix-blend-multiply"></div>
+          <div class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-5">
+            <div>
+              <p class="text-lg font-bold text-white">{caso.cliente}</p>
+              <p class="text-sm font-medium text-white/85">{caso.tipoTrabajo}</p>
+            </div>
+            <span class="rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white backdrop-blur-sm">
+              {caso.anio} · {caso.categoria}
+            </span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <script>
+    const botones = document.querySelectorAll<HTMLButtonElement>('.filtro-btn');
+    const tarjetas = document.querySelectorAll<HTMLAnchorElement>('.caso-card');
+
+    botones.forEach((boton) => {
+      boton.addEventListener('click', () => {
+        const filtro = boton.dataset.filtro;
+
+        botones.forEach((b) => {
+          const activo = b === boton;
+          b.setAttribute('aria-pressed', String(activo));
+          b.classList.toggle('border-brand', activo);
+          b.classList.toggle('bg-brand', activo);
+          b.classList.toggle('text-white', activo);
+          b.classList.toggle('shadow-[0_4px_14px_-2px_rgba(247,50,1,0.45)]', activo);
+          b.classList.toggle('border-black/10', !activo);
+          b.classList.toggle('text-body', !activo);
+        });
+
+        tarjetas.forEach((tarjeta) => {
+          const mostrar = filtro === 'Todos' || tarjeta.dataset.categoria === filtro;
+          tarjeta.classList.toggle('hidden', !mostrar);
+        });
+      });
+    });
+  </script>
+</Layout>

@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #f73201;
+  --color-brand-dark: #251426;
+  --color-heading: #333333;
+  --color-body: #666666;
+  --color-placeholder: #999999;
+
+  --font-sans: "Poppins", Helvetica, Arial, "Lucida Sans Unicode", sans-serif;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+[data-wipe-in] {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+  }
+
+  [data-wipe-out],
+  [data-wipe-in] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

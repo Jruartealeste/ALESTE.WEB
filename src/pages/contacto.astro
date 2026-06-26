@@ -1,0 +1,65 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const formspreeEndpoint = import.meta.env.PUBLIC_FORMSPREE_ENDPOINT;
+---
+
+<Layout title="Contacto" description="Contactanos para hablar de tu marca: comunicación, branding y campañas. Respondemos en menos de 24 horas.">
+  <section class="mx-auto max-w-3xl px-6 py-20">
+    <h1 class="text-3xl font-bold text-heading">Contacto</h1>
+    <p class="mt-4 text-body">
+      Contanos en pocas líneas qué necesitás comunicar y te respondemos en menos de 24 horas con los próximos pasos.
+    </p>
+
+    <form action={formspreeEndpoint} method="POST" class="mt-10 flex flex-col gap-5">
+      <input
+        type="text"
+        name="nombre"
+        placeholder="Nombre"
+        required
+        class="rounded-md border border-black/10 px-4 py-4 text-[15px] text-heading placeholder-placeholder transition-[border-color,box-shadow] duration-200 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/30"
+      />
+      <input
+        type="email"
+        name="email"
+        placeholder="Email"
+        required
+        class="rounded-md border border-black/10 px-4 py-4 text-[15px] text-heading placeholder-placeholder transition-[border-color,box-shadow] duration-200 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/30"
+      />
+      <textarea
+        name="mensaje"
+        placeholder="Contanos sobre tu proyecto"
+        rows={5}
+        required
+        class="rounded-md border border-black/10 px-4 py-4 text-[15px] text-heading placeholder-placeholder transition-[border-color,box-shadow] duration-200 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/30"
+      ></textarea>
+      <button
+        type="submit"
+        class="self-start rounded-full bg-brand px-[42px] py-[5px] text-[17px] font-medium text-white shadow-[0_4px_14px_-2px_rgba(247,50,1,0.45)] transition-[transform,box-shadow] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-0.5 hover:shadow-[0_8px_20px_-4px_rgba(247,50,1,0.55)] focus-visible:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand active:translate-y-0"
+      >
+        Enviar
+      </button>
+    </form>
+
+    <div class="mt-10 flex flex-col gap-4 border-t border-black/5 pt-6 text-body">
+      <p>
+        <span class="font-semibold text-heading">Email:</span>{' '}
+        <a href="mailto:hola@aleste.ar" class="text-brand hover:underline">hola@aleste.ar</a>
+      </p>
+      <p>
+        <span class="font-semibold text-heading">Teléfono:</span>{' '}
+        <a href="tel:+5491100000000" class="text-brand hover:underline">+54 9 11 0000-0000</a>
+      </p>
+      <p><span class="font-semibold text-heading">Dirección:</span> Dirección de ejemplo 123, Buenos Aires, Argentina</p>
+
+      <a
+        href="https://wa.me/5491100000000"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="mt-2 inline-flex w-fit items-center gap-2 rounded-full bg-brand px-6 py-2.5 font-medium text-white shadow-[0_4px_14px_-2px_rgba(247,50,1,0.45)] transition-[transform,box-shadow] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-0.5 hover:shadow-[0_8px_20px_-4px_rgba(247,50,1,0.55)] focus-visible:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand active:translate-y-0"
+      >
+        Escribinos por WhatsApp
+      </a>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,29 @@
+---
+interface Props {
+  clientes: string[];
+}
+
+const { clientes } = Astro.props;
+const pista = [...clientes, ...clientes];
+---
+
+<div class="group relative mt-10 overflow-hidden">
+  <div class="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-white to-transparent sm:w-24"></div>
+  <div class="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-white to-transparent sm:w-24"></div>
+
+  <div class="animate-marquee flex w-max items-center gap-10 group-hover:[animation-play-state:paused] sm:gap-14">
+    {pista.map((cliente, i) => (
+      <div
+        class="flex h-20 w-36 flex-shrink-0 items-center justify-center rounded-xl bg-black/5 p-5 transition-[transform] duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-0.5"
+        aria-hidden={i >= clientes.length ? 'true' : undefined}
+      >
+        <img
+          src={`https://placehold.co/160x80?text=${encodeURIComponent(cliente)}`}
+          alt={i < clientes.length ? cliente : ''}
+          class="h-auto w-full grayscale transition-[filter] duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:grayscale-0"
+          loading="lazy"
+        />
+      </div>
+    ))}
+  </div>
+</div>

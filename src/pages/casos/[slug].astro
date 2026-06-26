@@ -1,0 +1,80 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { casos } from '../../data/casos';
+
+export function getStaticPaths() {
+  return casos.map((caso) => ({ params: { slug: caso.slug }, props: { caso } }));
+}
+
+const { caso } = Astro.props;
+---
+
+<Layout title={`Caso: ${caso.cliente}`} description={`${caso.cliente} — ${caso.tipoTrabajo}. ${caso.desafio}`}>
+  <section class="mx-auto max-w-6xl px-6 py-16">
+    <a
+      href="/casos"
+      class="inline-flex items-center gap-2 text-sm font-medium text-brand transition-[transform] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-x-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
+    >
+      &larr; Volver a casos
+    </a>
+
+    <div class="mt-8 grid gap-10 md:grid-cols-[1fr_2fr]">
+      <div>
+        <p class="text-sm font-medium text-placeholder">{caso.anio} · {caso.categoria}</p>
+        <h1 class="mt-2 text-3xl font-bold text-heading">{caso.cliente}</h1>
+        <p class="mt-1 text-base font-medium text-brand">{caso.tipoTrabajo}</p>
+      </div>
+      <div>
+        <h2 class="text-sm font-semibold uppercase tracking-wide text-placeholder">Desafío</h2>
+        <p class="mt-2 text-body">{caso.desafio}</p>
+      </div>
+    </div>
+  </section>
+
+  <img
+    src={`https://placehold.co/1600x700?text=${encodeURIComponent(caso.cliente)}`}
+    alt={`Pieza principal del caso ${caso.cliente}`}
+    class="w-full object-cover"
+  />
+
+  <section class="mx-auto max-w-4xl px-6 py-16">
+    <div class="grid gap-10 sm:grid-cols-2">
+      <div>
+        <h2 class="text-sm font-semibold uppercase tracking-wide text-placeholder">Qué hicimos</h2>
+        <p class="mt-2 text-body">{caso.queHicimos}</p>
+      </div>
+      <div>
+        <h2 class="text-sm font-semibold uppercase tracking-wide text-placeholder">Resultado</h2>
+        <p class="mt-2 text-body">{caso.resultado}</p>
+      </div>
+    </div>
+
+    <h2 class="mt-14 text-center text-sm font-semibold uppercase tracking-wide text-placeholder">
+      Piezas destacadas
+    </h2>
+    <div class="mt-6 flex flex-col items-center gap-8">
+      {caso.piezas.map((pieza) => (
+        <figure class="w-full max-w-2xl text-center">
+          <img
+            src={`https://placehold.co/900x600?text=${encodeURIComponent(pieza)}`}
+            alt={`${pieza} — ${caso.cliente}`}
+            class="w-full rounded-xl object-cover shadow-[0_1px_2px_rgba(0,0,0,0.04),0_16px_32px_-16px_rgba(0,0,0,0.25)]"
+            loading="lazy"
+          />
+          <figcaption class="mt-3 text-sm font-medium text-body">{pieza}</figcaption>
+        </figure>
+      ))}
+    </div>
+
+    <div class="mt-16 flex flex-col items-center gap-4 rounded-2xl bg-brand-dark px-8 py-12 text-center text-white">
+      <h2 class="text-2xl font-bold">¿Tenés un desafío parecido?</h2>
+      <p class="max-w-md text-white/80">Hablemos de cómo podemos ayudarte a comunicarlo.</p>
+      <a
+        href="/contacto"
+        class="mt-2 rounded-full bg-brand px-7 py-3 text-[15px] font-medium text-white shadow-[0_4px_14px_-2px_rgba(247,50,1,0.45)] transition-[transform,box-shadow] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-0.5 hover:shadow-[0_8px_20px_-4px_rgba(247,50,1,0.55)] focus-visible:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand active:translate-y-0"
+      >
+        Hablemos
+      </a>
+    </div>
+  </section>
+</Layout>
