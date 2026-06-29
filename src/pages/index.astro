@@ -13,19 +13,16 @@ const destacados = casos.slice(0, 3);
 >
   <div class="relative">
     <section id="hero" class="sticky top-0 z-0 flex h-[100dvh] items-center bg-brand px-6 text-white">
-      <div data-wipe-out class="mx-auto max-w-3xl text-center">
-        <h1 class="text-4xl font-bold leading-tight md:text-5xl">
-          Comunicación 360° para marcas que quieren crecer
+      <div data-wipe-out class="mx-auto w-full max-w-5xl text-center">
+        <h1 class="relative h-[1.15em] overflow-hidden text-7xl font-bold leading-[1.15] sm:text-8xl md:text-9xl">
+          <span data-rotate-word class="absolute inset-0 flex items-center justify-center text-black">Escucha</span>
+          <span data-rotate-word class="absolute inset-0 flex items-center justify-center text-black">Presencia</span>
+          <span data-rotate-word class="absolute inset-0 flex items-center justify-center text-black">Compañía</span>
+          <span data-rotate-word class="absolute inset-0 flex items-center justify-center text-black">Diálogo</span>
         </h1>
-        <p class="mt-4 text-lg font-medium text-white/90">
-          Pensamos estrategia, identidad y campañas como un solo proceso: para que cada pieza que ve tu público hable el mismo idioma.
+        <p class="mt-6 text-2xl font-medium text-white/90 md:text-3xl">
+          Por eso tenemos vínculos duraderos
         </p>
-        <a
-          href="/contacto"
-          class="mt-8 inline-block rounded-full bg-white px-7 py-3 text-[15px] font-medium text-brand shadow-[0_4px_14px_-2px_rgba(0,0,0,0.25)] transition-[transform,box-shadow] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-0.5 hover:shadow-[0_8px_20px_-4px_rgba(0,0,0,0.3)] focus-visible:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white active:translate-y-0"
-        >
-          Hablemos
-        </a>
       </div>
     </section>
 
@@ -104,13 +101,13 @@ const destacados = casos.slice(0, 3);
       </div>
     </section>
 
-    <section id="cta-final" class="relative z-40 mx-auto max-w-3xl px-6 py-20 text-center">
-      <div data-wipe-in>
-        <h2 class="text-3xl font-bold text-heading">¿Listo para comunicar mejor?</h2>
-        <p class="mt-4 text-body">Contanos tu proyecto y vemos juntos cómo encararlo.</p>
+    <section id="cta-final" class="sticky top-0 z-40 flex min-h-[100dvh] flex-col justify-center bg-brand-dark px-6 py-20 text-center text-white">
+      <div data-wipe-in class="mx-auto max-w-3xl">
+        <h2 class="text-3xl font-bold">¿Listo para comunicar mejor?</h2>
+        <p class="mt-4 text-white/80">Contanos tu proyecto y vemos juntos cómo encararlo.</p>
         <a
           href="/contacto"
-          class="mt-7 inline-block rounded-full bg-brand px-7 py-3 text-[15px] font-medium text-white shadow-[0_4px_14px_-2px_rgba(247,50,1,0.45)] transition-[transform,box-shadow] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-0.5 hover:shadow-[0_8px_20px_-4px_rgba(247,50,1,0.55)] focus-visible:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand active:translate-y-0"
+          class="mt-7 inline-block rounded-full bg-brand px-7 py-3 text-[15px] font-medium text-white shadow-[0_4px_14px_-2px_rgba(247,50,1,0.45)] transition-[transform,box-shadow] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-0.5 hover:shadow-[0_8px_20px_-4px_rgba(247,50,1,0.55)] focus-visible:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white active:translate-y-0"
         >
           Hablemos
         </a>
@@ -146,6 +143,26 @@ const destacados = casos.slice(0, 3);
         gsap.set(outgoing, { opacity: 1 - self.progress, y: self.progress * -24 });
         gsap.set(incoming, { opacity: self.progress, y: (1 - self.progress) * 24 });
       },
+    });
+  }
+
+  const rotateWords = Array.from(document.querySelectorAll('[data-rotate-word]'));
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (rotateWords.length && !reduceMotion) {
+    gsap.set(rotateWords, { yPercent: 100, opacity: 0 });
+    gsap.set(rotateWords[0], { yPercent: 0, opacity: 1 });
+
+    const tl = gsap.timeline({ repeat: -1 });
+    rotateWords.forEach((word, i) => {
+      const next = rotateWords[(i + 1) % rotateWords.length];
+      tl.to(word, { yPercent: -100, opacity: 0, duration: 0.6, ease: 'power2.inOut' }, '+=2')
+        .fromTo(
+          next,
+          { yPercent: 100, opacity: 0 },
+          { yPercent: 0, opacity: 1, duration: 0.6, ease: 'power2.inOut', immediateRender: false },
+          '<'
+        );
     });
   }
 </script>

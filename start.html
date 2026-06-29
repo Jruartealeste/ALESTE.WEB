@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<title>ALESTE — Ver en vivo</title>
+<style>
+  body {
+    font-family: system-ui, sans-serif;
+    background: #251426;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    gap: 1.5rem;
+  }
+  h1 { color: #F73201; margin-bottom: 0; }
+  p { color: #999; margin-top: 0; }
+  nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 280px;
+  }
+  a {
+    display: block;
+    text-align: center;
+    padding: 0.75rem 1rem;
+    background: #fff;
+    color: #251426;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+  }
+  a:hover { transform: translateY(-2px); opacity: 0.9; }
+  a:active { transform: translateY(0); }
+  iframe {
+    width: 90vw;
+    height: 80vh;
+    border: 2px solid #F73201;
+    border-radius: 8px;
+  }
+</style>
+</head>
+<body>
+  <h1>ALESTE — Vista en vivo</h1>
+  <p>Asegurate de tener <code>npm run dev</code> corriendo en http://localhost:4321</p>
+  <nav>
+    <a href="http://localhost:4321/" target="preview">Inicio</a>
+    <a href="http://localhost:4321/servicios" target="preview">Servicios</a>
+    <a href="http://localhost:4321/casos" target="preview">Casos</a>
+    <a href="http://localhost:4321/quienes-somos" target="preview">Quiénes somos</a>
+    <a href="http://localhost:4321/contacto" target="preview">Contacto</a>
+  </nav>
+  <iframe name="preview" src="http://localhost:4321/"></iframe>
+</body>
+</html>

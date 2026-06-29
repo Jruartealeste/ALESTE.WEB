@@ -28,6 +28,10 @@
   transform: translateY(24px);
 }
 
+[data-rotate-word] {
+  will-change: transform, opacity;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee {
     animation: none;
@@ -37,5 +41,14 @@
   [data-wipe-in] {
     opacity: 1 !important;
     transform: none !important;
+  }
+
+  [data-rotate-word] {
+    opacity: 0;
+    transform: none;
+  }
+
+  [data-rotate-word]:first-of-type {
+    opacity: 1;
   }
 }
