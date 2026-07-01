@@ -1,12 +1,19 @@
 ---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 import Layout from '../../layouts/Layout.astro';
-import { casos, categorias } from '../../data/casos';
+
+const categorias = ['Todos', 'Branding', 'Campañas', 'Digital', 'Web', 'Redes', 'Institucional'] as const;
+
+const todosLosCasos = await getCollection('casos');
+const casos = todosLosCasos.sort((a, b) => a.data.orden - b.data.orden);
 ---
 
 <Layout
   title="Casos"
   description="Trabajos de comunicación, branding y campañas que hicimos para nuestros clientes."
 >
+  <div class="bg-white">
   <section class="mx-auto max-w-6xl px-6 py-20">
     <h1 class="text-3xl font-bold text-heading">Casos</h1>
     <p class="mt-4 max-w-2xl text-body">
@@ -32,32 +39,57 @@ import { casos, categorias } from '../../data/casos';
     </div>
 
     <div class="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3" id="grilla-casos">
-      {casos.map((caso) => (
-        <a
-          href={`/casos/${caso.slug}`}
-          data-categoria={caso.categoria}
-          class="caso-card group relative block overflow-hidden rounded-2xl shadow-[0_1px_2px_rgba(0,0,0,0.04),0_16px_32px_-16px_rgba(0,0,0,0.25)] transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-1 hover:shadow-[0_4px_8px_rgba(0,0,0,0.06),0_24px_40px_-16px_rgba(247,50,1,0.3)]"
-        >
-          <img
-            src={`https://placehold.co/600x450?text=${encodeURIComponent(caso.cliente)}`}
-            alt={`${caso.cliente} — ${caso.tipoTrabajo}`}
-            class="h-72 w-full object-cover transition-[transform] duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:scale-105"
-            loading="lazy"
-          />
-          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent mix-blend-multiply"></div>
-          <div class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-5">
-            <div>
-              <p class="text-lg font-bold text-white">{caso.cliente}</p>
-              <p class="text-sm font-medium text-white/85">{caso.tipoTrabajo}</p>
+      {casos.map((caso) => {
+        const mediaSrc = caso.data.coverImage ?? caso.data.galeria?.[0];
+        const hasVideo = !!(caso.data.videos?.length);
+        return (
+          <a
+            href={`/casos/${caso.id}`}
+            data-categoria={caso.data.categoria}
+            class="caso-card group relative block overflow-hidden rounded-2xl shadow-[0_1px_2px_rgba(0,0,0,0.04),0_16px_32px_-16px_rgba(0,0,0,0.25)] transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-1 hover:shadow-[0_4px_8px_rgba(0,0,0,0.06),0_24px_40px_-16px_rgba(247,50,1,0.3)]"
+          >
+            {mediaSrc ? (
+              <Image
+                src={mediaSrc}
+                alt={`${caso.data.cliente} — ${caso.data.tipoTrabajo}`}
+                width={600}
+                height={450}
+                class="h-72 w-full object-cover transition-[transform] duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:scale-105"
+                loading="lazy"
+              />
+            ) : (
+              <div class="flex h-72 w-full items-center justify-center bg-brand-dark">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white/50" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </div>
+            )}
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+            <div class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-5">
+              <div>
+                <p class="text-lg font-bold text-white">{caso.data.cliente}</p>
+                <p class="text-sm font-medium text-white/85">{caso.data.tipoTrabajo}</p>
+              </div>
+              <div class="flex flex-col items-end gap-1.5">
+                <span class="rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white backdrop-blur-sm">
+                  {caso.data.anio ? `${caso.data.anio} · ` : ''}{caso.data.categoria}
+                </span>
+                {hasVideo && (
+                  <span class="flex items-center gap-1 rounded-full bg-white/15 px-2.5 py-1 text-xs font-medium text-white backdrop-blur-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                    Video
+                  </span>
+                )}
+              </div>
             </div>
-            <span class="rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white backdrop-blur-sm">
-              {caso.anio} · {caso.categoria}
-            </span>
-          </div>
-        </a>
-      ))}
+          </a>
+        );
+      })}
     </div>
   </section>
+  </div>
 
   <script>
     const botones = document.querySelectorAll<HTMLButtonElement>('.filtro-btn');

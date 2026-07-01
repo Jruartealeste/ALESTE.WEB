@@ -1,10 +1,14 @@
 ---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
-import { casos } from '../data/casos';
 import { clientes } from '../data/clientes';
+import { servicios } from '../data/servicios';
 import ClientLogosCarousel from '../components/ClientLogosCarousel.astro';
 
-const destacados = casos.slice(0, 3);
+const todosLosCasos = await getCollection('casos');
+const destacados = todosLosCasos.sort((a, b) => a.data.orden - b.data.orden).slice(0, 3);
+const first = servicios[0];
 ---
 
 <Layout
@@ -14,7 +18,7 @@ const destacados = casos.slice(0, 3);
   <div class="relative">
     <section id="hero" class="sticky top-0 z-0 flex h-[100dvh] items-center bg-brand px-6 text-white">
       <div data-wipe-out class="mx-auto w-full max-w-5xl text-center">
-        <h1 class="relative h-[1.15em] overflow-hidden text-7xl font-bold leading-[1.15] sm:text-8xl md:text-9xl">
+        <h1 class="relative h-[1.5em] overflow-hidden text-6xl font-bold leading-[1.5] sm:text-8xl md:text-9xl">
           <span data-rotate-word class="absolute inset-0 flex items-center justify-center text-black">Escucha</span>
           <span data-rotate-word class="absolute inset-0 flex items-center justify-center text-black">Presencia</span>
           <span data-rotate-word class="absolute inset-0 flex items-center justify-center text-black">Compañía</span>
@@ -29,32 +33,98 @@ const destacados = casos.slice(0, 3);
     <section id="lo-que-hacemos" class="sticky top-0 z-10 flex min-h-[100dvh] flex-col justify-center bg-white px-6 py-20">
       <div class="mx-auto max-w-6xl w-full">
         <div data-wipe-in data-wipe-out class="text-center">
-          <h2 class="text-3xl font-bold text-heading">Lo que hacemos</h2>
-          <p class="mx-auto mt-3 max-w-xl text-body">
-            Seis disciplinas que trabajan juntas, desde la estrategia hasta la pieza final.
-          </p>
-        </div>
-
-        <div class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {[
-            ['Comunicación 360°', 'Estrategia integral que conecta marca, medios y públicos en un mismo mensaje.'],
-            ['Identidad de marca', 'Naming, logo, sistema visual y tono de voz para que tu marca se reconozca de un vistazo.'],
-            ['Campañas digitales', 'Piezas y pauta para redes y medios online con resultados medibles.'],
-          ].map(([title, bajada]) => (
-            <div class="rounded-2xl border border-black/5 bg-white p-7 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_32px_-16px_rgba(247,50,1,0.18)] transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-1">
-              <h3 class="border-b border-black/5 pb-[10px] text-xl font-bold text-heading">{title}</h3>
-              <p class="mt-3 text-[15px] leading-relaxed text-body">{bajada}</p>
-            </div>
-          ))}
-        </div>
-
-        <div class="mt-10 text-center">
           <a
             href="/servicios"
-            class="inline-flex items-center gap-2 text-[15px] font-medium text-brand transition-[transform] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:translate-x-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
+            class="group inline-block text-3xl font-bold text-heading transition-[color] duration-200 hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
           >
-            Ver todos los servicios &rarr;
+            Lo que hacemos
           </a>
+        </div>
+
+        <!-- Carrusel de servicios -->
+        <div
+          id="service-carousel"
+          class="mt-14 flex flex-col gap-10 lg:flex-row lg:items-center lg:gap-20"
+        >
+          <!-- Bloque de texto -->
+          <div id="carousel-text" class="flex flex-col flex-1" style="order: 1">
+            <div id="carousel-text-inner" style="width: fit-content; margin-left: auto">
+              <h3
+                id="carousel-title"
+                class="text-2xl font-bold text-heading lg:text-3xl lg:leading-snug"
+              >
+                {first.title}
+              </h3>
+              <p
+                id="carousel-desc"
+                class="mt-4 max-w-sm text-[15px] leading-relaxed text-body"
+              >
+                {first.bajada}
+              </p>
+            </div>
+          </div>
+
+          <!-- Bloque de ilustración -->
+          <div
+            id="carousel-illus"
+            class="flex flex-1 items-center justify-center p-4 lg:p-10"
+            style="order: 2"
+          >
+            <img
+              id="carousel-img"
+              src={first.illustration}
+              alt={`Ilustración ${first.title}`}
+              class="illus-img max-h-56 w-full object-contain sm:max-h-72 lg:max-h-80"
+              loading="eager"
+            />
+          </div>
+        </div>
+
+        <!-- Fila de controles fija (fuera del bloque animado) -->
+        <div class="mt-10 flex flex-col items-center gap-5">
+          <div class="flex items-center gap-3">
+            <!-- Flecha arriba (anterior) -->
+            <button
+              id="carousel-prev"
+              aria-label="Servicio anterior"
+              class="group flex h-11 w-11 items-center justify-center rounded-full border-2 border-brand text-brand
+                     transition-[background-color,color,transform,box-shadow] duration-200
+                     ease-[cubic-bezier(0.34,1.56,0.64,1)]
+                     hover:bg-brand hover:text-white hover:shadow-[0_4px_12px_-2px_rgba(247,50,1,0.4)]
+                     focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand
+                     active:scale-95"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M8 12V4M4 8l4-4 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+
+            <!-- Flecha abajo (siguiente) -->
+            <button
+              id="carousel-next"
+              aria-label="Servicio siguiente"
+              class="group flex h-11 w-11 items-center justify-center rounded-full border-2 border-brand text-brand
+                     transition-[background-color,color,transform,box-shadow] duration-200
+                     ease-[cubic-bezier(0.34,1.56,0.64,1)]
+                     hover:bg-brand hover:text-white hover:shadow-[0_4px_12px_-2px_rgba(247,50,1,0.4)]
+                     focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand
+                     active:scale-95"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M8 4v8M4 8l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+
+            <!-- Indicadores de punto -->
+            <div class="ml-3 flex gap-[7px]" aria-hidden="true">
+              {servicios.map((_, i) => (
+                <span
+                  class={`carousel-dot block h-[7px] rounded-full transition-[width,background-color] duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${i === 0 ? 'w-5 bg-brand' : 'w-[7px] bg-black/15'}`}
+                />
+              ))}
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
@@ -62,7 +132,7 @@ const destacados = casos.slice(0, 3);
     <section id="casos-recientes" class="sticky top-0 z-20 flex min-h-[100dvh] flex-col justify-center bg-brand-dark px-6 py-20 text-white">
       <div class="mx-auto max-w-6xl w-full">
         <div data-wipe-in data-wipe-out class="flex flex-wrap items-end justify-between gap-4">
-          <h2 class="text-3xl font-bold">Casos recientes</h2>
+          <h2 class="text-3xl font-bold">Casos</h2>
           <a
             href="/casos"
             class="text-[15px] font-medium text-white/80 transition-[color,transform] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:translate-x-0.5 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
@@ -72,24 +142,37 @@ const destacados = casos.slice(0, 3);
         </div>
 
         <div class="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {destacados.map((caso) => (
-            <a
-              href={`/casos/${caso.slug}`}
-              class="group relative block overflow-hidden rounded-2xl shadow-[0_1px_2px_rgba(0,0,0,0.04),0_16px_32px_-16px_rgba(0,0,0,0.4)] transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-1"
-            >
-              <img
-                src={`https://placehold.co/600x450?text=${encodeURIComponent(caso.cliente)}`}
-                alt={`${caso.cliente} — ${caso.tipoTrabajo}`}
-                class="h-64 w-full object-cover transition-[transform] duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:scale-105"
-                loading="lazy"
-              />
-              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent mix-blend-multiply"></div>
-              <div class="absolute inset-x-0 bottom-0 p-5">
-                <p class="text-lg font-bold text-white">{caso.cliente}</p>
-                <p class="text-sm font-medium text-white/85">{caso.tipoTrabajo}</p>
-              </div>
-            </a>
-          ))}
+          {destacados.map((caso) => {
+            const mediaSrc = caso.data.coverImage ?? caso.data.galeria?.[0];
+            return (
+              <a
+                href={`/casos/${caso.id}`}
+                class="group relative block overflow-hidden rounded-2xl shadow-[0_1px_2px_rgba(0,0,0,0.04),0_16px_32px_-16px_rgba(0,0,0,0.4)] transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-1 hover:shadow-[0_4px_8px_rgba(0,0,0,0.06),0_24px_40px_-16px_rgba(247,50,1,0.3)]"
+              >
+                {mediaSrc ? (
+                  <Image
+                    src={mediaSrc}
+                    alt={`${caso.data.cliente} — ${caso.data.tipoTrabajo}`}
+                    width={600}
+                    height={450}
+                    class="h-64 w-full object-cover transition-[transform] duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:scale-105"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div class="flex h-64 w-full items-center justify-center bg-black/30">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white/50" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </div>
+                )}
+                <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
+                <div class="absolute inset-x-0 bottom-0 p-5">
+                  <p class="text-lg font-bold text-white">{caso.data.cliente}</p>
+                  <p class="text-sm font-medium text-white/85">{caso.data.tipoTrabajo}</p>
+                </div>
+              </a>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -116,12 +199,32 @@ const destacados = casos.slice(0, 3);
   </div>
 </Layout>
 
+<style>
+  .illus-img {
+    will-change: transform;
+  }
+
+  #carousel-illus {
+    cursor: default;
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  #carousel-illus:hover {
+    transform: scale(1.04);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #carousel-illus:hover { transform: none; }
+  }
+</style>
+
 <script>
   import { gsap } from 'gsap';
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
   gsap.registerPlugin(ScrollTrigger);
 
+  // ── Scroll-wipe between sections ───────────────────────────────────────────
   const sectionIds = ['hero', 'lo-que-hacemos', 'casos-recientes', 'clientes', 'cta-final'];
   const sections = sectionIds.map((id) => document.getElementById(id));
 
@@ -146,6 +249,7 @@ const destacados = casos.slice(0, 3);
     });
   }
 
+  // ── Hero rotating words ────────────────────────────────────────────────────
   const rotateWords = Array.from(document.querySelectorAll('[data-rotate-word]'));
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -165,4 +269,177 @@ const destacados = casos.slice(0, 3);
         );
     });
   }
+
+  // ── Service Carousel ───────────────────────────────────────────────────────
+  const carouselServices = [
+    {
+      title: 'Comunicación 360°',
+      bajada: 'Estrategia integral que conecta marca, medios y públicos en un mismo mensaje, coherente en cada canal.',
+      illustration: '/ilustraciones/campanas-360.svg',
+    },
+    {
+      title: 'Identidad de marca',
+      bajada: 'Construcción y actualización de marca: naming, logo, sistema visual y tono de voz para que se reconozca de un vistazo.',
+      illustration: '/ilustraciones/identidad-marca.svg',
+    },
+    {
+      title: 'Campañas digitales',
+      bajada: 'Piezas y pauta para redes y medios online, pensadas para generar conversación y resultados medibles.',
+      illustration: '/ilustraciones/campanas-digitales.svg',
+    },
+    {
+      title: 'Campañas tradicionales',
+      bajada: 'Gráfica, vía pública y prensa con un mensaje claro, producido con la misma calidad que el resto de la marca.',
+      illustration: '/ilustraciones/campanas-tradicionales.svg',
+    },
+    {
+      title: 'Diseño web y plataformas',
+      bajada: 'Sitios y plataformas digitales con foco en performance, usabilidad y conversión, no solo en estética.',
+      illustration: '/ilustraciones/diseno-web.svg',
+    },
+    {
+      title: 'Formadores de opinión',
+      bajada: 'Relación con periodistas, influencers y voceros clave para que el mensaje de la marca llegue con credibilidad.',
+      illustration: '/ilustraciones/formadores-opinion.svg',
+    },
+  ];
+
+  const TOTAL = carouselServices.length;
+  const AUTO_PLAY_MS = 4500;
+
+  let current = 0;
+  let autoTimer: ReturnType<typeof setInterval> | null = null;
+  let isAnimating = false;
+
+  const carouselEl  = document.getElementById('service-carousel')!;
+  const textEl      = document.getElementById('carousel-text')!;
+  const textInner   = document.getElementById('carousel-text-inner') as HTMLElement;
+  const illusEl     = document.getElementById('carousel-illus')!;
+  const titleEl     = document.getElementById('carousel-title')!;
+  const descEl      = document.getElementById('carousel-desc')!;
+  const imgEl       = document.getElementById('carousel-img') as HTMLImageElement;
+  const dots        = Array.from(document.querySelectorAll('.carousel-dot')) as HTMLElement[];
+
+  // ── Float GSAP (no CSS — evita conflicto de transforms con el spring) ─────
+  let floatTween: gsap.core.Tween | null = null;
+
+  function startFloat() {
+    if (reduceMotion) return;
+    floatTween = gsap.to(imgEl, {
+      y: -10,
+      duration: 2,
+      ease: 'sine.inOut',
+      repeat: -1,
+      yoyo: true,
+    });
+  }
+
+  function stopFloat() {
+    floatTween?.kill();
+    floatTween = null;
+    gsap.set(imgEl, { y: 0 });
+  }
+
+  function updateDots(index: number) {
+    dots.forEach((dot, i) => {
+      if (i === index) {
+        dot.style.width = '20px';
+        dot.style.backgroundColor = 'var(--color-brand, #F73201)';
+      } else {
+        dot.style.width = '7px';
+        dot.style.backgroundColor = 'rgba(0,0,0,0.15)';
+      }
+    });
+  }
+
+  function goTo(targetIndex: number, direction: 'next' | 'prev') {
+    if (isAnimating) return;
+    isAnimating = true;
+
+    stopFloat();
+
+    const dy = direction === 'next' ? -28 : 28;
+    const next = ((targetIndex % TOTAL) + TOTAL) % TOTAL;
+
+    gsap.to([textEl, illusEl], {
+      opacity: 0,
+      y: dy,
+      duration: 0.28,
+      ease: 'power2.in',
+      onComplete() {
+        current = next;
+        const svc = carouselServices[current];
+
+        titleEl.textContent   = svc.title;
+        descEl.textContent    = svc.bajada;
+        imgEl.src             = svc.illustration;
+        imgEl.alt             = `Ilustración ${svc.title}`;
+
+        // Alternar layout: índices impares invierten el orden visual
+        const swap = current % 2 === 1;
+        textEl.style.order        = swap ? '2' : '1';
+        illusEl.style.order       = swap ? '1' : '2';
+        // Cuando ilustración está a la DERECHA (no swap): bloque heading+párrafo empujado a la derecha como unidad
+        // Cuando ilustración está a la IZQUIERDA (swap): bloque arranca desde el borde izquierdo del flex item
+        textInner.style.width      = swap ? '' : 'fit-content';
+        textInner.style.marginLeft = swap ? '' : 'auto';
+
+        updateDots(current);
+
+        // Texto: fade + slide
+        gsap.fromTo(
+          textEl,
+          { opacity: 0, y: -dy },
+          { opacity: 1, y: 0, duration: 0.48, ease: 'power2.out',
+            onComplete() { isAnimating = false; } }
+        );
+
+        // Imagen: spring de escala independiente, luego retoma el float
+        gsap.fromTo(
+          imgEl,
+          { opacity: 0, scale: 0.82, y: 0 },
+          {
+            opacity: 1,
+            scale: 1,
+            y: 0,
+            duration: 0.65,
+            delay: 0.06,
+            ease: 'back.out(1.8)',
+            onComplete() { startFloat(); },
+          }
+        );
+
+        // Contenedor: solo fade (sin y, para que el spring del img sea visible)
+        gsap.fromTo(
+          illusEl,
+          { opacity: 0 },
+          { opacity: 1, duration: 0.48, ease: 'power2.out' }
+        );
+      },
+    });
+  }
+
+  function startAutoPlay() {
+    autoTimer = setInterval(() => goTo(current + 1, 'next'), AUTO_PLAY_MS);
+  }
+
+  function resetAutoPlay() {
+    if (autoTimer) clearInterval(autoTimer);
+    startAutoPlay();
+  }
+
+  document.getElementById('carousel-prev')!.addEventListener('click', () => {
+    goTo(current - 1, 'prev');
+    resetAutoPlay();
+  });
+
+  document.getElementById('carousel-next')!.addEventListener('click', () => {
+    goTo(current + 1, 'next');
+    resetAutoPlay();
+  });
+
+  // Estado inicial
+  updateDots(0);
+  startFloat();
+  if (!reduceMotion) startAutoPlay();
 </script>

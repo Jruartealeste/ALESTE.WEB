@@ -1,38 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { servicios } from '../data/servicios';
 
-const services = [
-  {
-    title: 'Comunicación 360°',
-    bajada:
-      'Estrategia integral que conecta marca, medios y públicos en un mismo mensaje, coherente en cada canal.',
-  },
-  {
-    title: 'Identidad de marca',
-    bajada:
-      'Construcción y actualización de marca: naming, logo, sistema visual y tono de voz para que se reconozca de un vistazo.',
-  },
-  {
-    title: 'Campañas digitales',
-    bajada:
-      'Piezas y pauta para redes y medios online, pensadas para generar conversación y resultados medibles.',
-  },
-  {
-    title: 'Campañas tradicionales',
-    bajada:
-      'Gráfica, vía pública y prensa con un mensaje claro, producido con la misma calidad que el resto de la marca.',
-  },
-  {
-    title: 'Diseño web y plataformas',
-    bajada:
-      'Sitios y plataformas digitales con foco en performance, usabilidad y conversión, no solo en estética.',
-  },
-  {
-    title: 'Formadores de opinión',
-    bajada:
-      'Relación con periodistas, influencers y voceros clave para que el mensaje de la marca llegue con credibilidad.',
-  },
-];
+const services = servicios;
 ---
 
 <Layout
