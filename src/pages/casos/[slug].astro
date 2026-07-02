@@ -25,58 +25,68 @@ const hasGallery = galleryImages.length > 0 || galleryVideos.length > 0;
 <Layout title={`${cliente} — ${tipoTrabajo}`} description={`${cliente} — ${tipoTrabajo}`}>
   <div class="bg-white">
 
-  <!-- Hero: full viewport, video/imagen como fondo, overlay oscuro que se revela al hacer scroll -->
+  <!--
+    Hero pinneado por GSAP (150vh de scroll).
+    Texto: arriba (2 col — info + descripción), fade in place, no se mueve ("fijo").
+    Media: parallax suave hacia abajo ("acompaña bajando").
+    Overlay: se desvanece revelando el material en colores reales.
+    Al soltar el pin: galería y CTA continúan normalmente.
+  -->
   <section id="caso-hero" class="relative h-screen overflow-hidden">
 
-    {heroVideo ? (
-      <video
-        src={heroVideo}
-        class="absolute inset-0 h-full w-full object-cover"
-        autoplay
-        muted
-        loop
-        playsinline
-        preload="auto"
-      />
-    ) : heroImg && (
-      <Image
-        src={heroImg}
-        alt={`Imagen principal del caso ${cliente}`}
-        width={1920}
-        height={1080}
-        class="absolute inset-0 h-full w-full object-cover"
-      />
-    )}
+    <!-- Media: full bleed, parallax suave con GSAP -->
+    <div id="hero-media" class="absolute inset-0 will-change-transform">
+      {heroVideo ? (
+        <video
+          src={heroVideo}
+          class="h-full w-full object-cover"
+          autoplay
+          muted
+          loop
+          playsinline
+          preload="auto"
+        />
+      ) : heroImg && (
+        <Image
+          src={heroImg}
+          alt={`Imagen principal del caso ${cliente}`}
+          width={1920}
+          height={1080}
+          class="h-full w-full object-cover"
+        />
+      )}
+    </div>
 
-    <!-- Overlay oscuro: GSAP lo anima de opaco a transparente al hacer scroll -->
-    <div id="hero-overlay" class="absolute inset-0 bg-black/80"></div>
+    <!-- Overlay: GSAP lo desvanece al hacer scroll -->
+    <div id="hero-overlay" class="absolute inset-0 z-10 bg-black/75"></div>
 
-    <!-- Texto superpuesto: GSAP lo mueve hacia arriba (parallax) al hacer scroll -->
-    <div id="hero-text" class="absolute inset-x-0 bottom-0 flex flex-col px-8 pb-14 md:px-16 md:pb-20">
+    <!-- Texto: queda fijo en su posición, fade in place (sin movimiento vertical) -->
+    <div id="hero-text" class="absolute inset-x-0 top-0 z-20 px-8 pt-16 md:px-16 md:pt-20">
       <a
         href="/casos"
-        class="mb-6 inline-flex items-center gap-2 text-sm font-medium text-white/60 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+        class="inline-flex items-center gap-2 text-sm font-medium text-white/60 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
       >
         &larr; Volver a casos
       </a>
-      <p class="text-sm font-medium text-white/50">
-        {anio ? `${anio} · ` : ''}{categoria}
-      </p>
-      <h1 class="mt-2 text-4xl font-bold text-white md:text-5xl">{cliente}</h1>
-      <p class="mt-2 text-base font-medium text-brand">{tipoTrabajo}</p>
+
+      <div class="mt-8 grid gap-10 md:grid-cols-[1fr_2fr]">
+        <div>
+          <p class="text-sm font-medium text-white/50">
+            {anio ? `${anio} · ` : ''}{categoria}
+          </p>
+          <h1 class="mt-2 text-3xl font-bold text-white md:text-4xl">{cliente}</h1>
+          <p class="mt-1 text-base font-medium text-brand">{tipoTrabajo}</p>
+        </div>
+        <div class="prose prose-invert max-w-none prose-p:text-white/80 prose-headings:text-white">
+          <Content />
+        </div>
+      </div>
     </div>
 
-  </section>
-
-  <!-- Descripción del caso -->
-  <section class="mx-auto max-w-4xl px-6 py-16">
-    <div class="prose prose-neutral max-w-none text-body">
-      <Content />
-    </div>
   </section>
 
   {hasGallery && (
-    <section class="mx-auto max-w-5xl px-6 pb-16">
+    <section class="mx-auto max-w-5xl px-6 py-16">
       <h2 class="text-center text-xs font-semibold uppercase tracking-widest text-placeholder">
         Piezas destacadas
       </h2>
@@ -134,22 +144,27 @@ const hasGallery = galleryImages.length > 0 || galleryVideos.length > 0;
     const hero    = document.getElementById('caso-hero');
     const overlay = document.getElementById('hero-overlay');
     const text    = document.getElementById('hero-text');
+    const media   = document.getElementById('hero-media');
 
-    if (hero && overlay && text) {
+    if (hero && overlay && text && media) {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: hero,
           start: 'top top',
-          end: 'bottom top',
-          scrub: 0.5,
+          end: '+=150%',  // 150vh de scroll mientras el hero está pinneado
+          pin: true,
+          scrub: 1,
         }
       });
 
-      // Overlay: negro opaco → transparente (revela colores reales del material)
-      tl.fromTo(overlay, { opacity: 1 }, { opacity: 0, ease: 'none' });
+      // Texto: fade in place — queda fijo, no se mueve, desaparece en los primeros ~40% del scroll
+      tl.fromTo(text, { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.4 }, 0);
 
-      // Texto: parallax hacia arriba + fade — sale antes de que el hero termine
-      tl.fromTo(text, { y: 0, opacity: 1 }, { y: -80, opacity: 0, ease: 'none' }, '<');
+      // Overlay: se desvanece completamente a lo largo del scroll
+      tl.fromTo(overlay, { opacity: 1 }, { opacity: 0, ease: 'none' }, 0);
+
+      // Media: parallax suave hacia abajo — "acompaña bajando"
+      tl.fromTo(media, { y: '0%' }, { y: '8%', ease: 'none' }, 0);
     }
   }
 </script>
