@@ -38,16 +38,30 @@ const hasGallery = galleryImages.length > 0 || galleryVideos.length > 0;
     <!-- Media: full bleed, parallax suave con GSAP -->
     <div id="hero-media" class="absolute inset-0 will-change-transform">
       {heroVideo ? (
-        <video
-          src={heroVideo}
-          class="h-full w-full object-cover"
-          style={focusStyle}
-          autoplay
-          muted
-          loop
-          playsinline
-          preload="auto"
-        />
+        <>
+          {/* Video: solo en desktop (md+) */}
+          <video
+            src={heroVideo}
+            class="hidden h-full w-full object-cover md:block"
+            style={focusStyle}
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="auto"
+          />
+          {/* Mobile: coverImage como fallback del video */}
+          {coverImage && (
+            <Image
+              src={coverImage}
+              alt={`Imagen principal del caso ${cliente}`}
+              width={1080}
+              height={1920}
+              class="block h-full w-full object-cover md:hidden"
+              style={focusStyle}
+            />
+          )}
+        </>
       ) : heroImg && (
         <Image
           src={heroImg}
