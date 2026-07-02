@@ -19,6 +19,8 @@ const galleryVideos = heroVideo ? (videos?.slice(1) ?? []) : [];
 // Image hero only when there are no videos
 const heroImg = !heroVideo ? (coverImage ?? galeria?.[0]) : null;
 const galleryImages = heroVideo ? (galeria ?? []) : (coverImage ? (galeria ?? []) : (galeria?.slice(1) ?? []));
+// Mobile fallback for video cases: coverImage or first gallery image
+const mobileHeroImg = heroVideo ? (coverImage ?? galeria?.[0] ?? null) : null;
 
 const hasGallery = galleryImages.length > 0 || galleryVideos.length > 0;
 ---
@@ -33,7 +35,7 @@ const hasGallery = galleryImages.length > 0 || galleryVideos.length > 0;
     Overlay: se desvanece revelando el material en colores reales.
     Al soltar el pin: galería y CTA continúan normalmente.
   -->
-  <section id="caso-hero" class="relative h-screen overflow-hidden">
+  <section id="caso-hero" class="relative h-[55vh] overflow-hidden md:h-screen">
 
     <!-- Media: full bleed, parallax suave con GSAP -->
     <div id="hero-media" class="absolute inset-0 will-change-transform">
@@ -50,13 +52,13 @@ const hasGallery = galleryImages.length > 0 || galleryVideos.length > 0;
             playsinline
             preload="auto"
           />
-          {/* Mobile: coverImage como fallback del video */}
-          {coverImage && (
+          {/* Mobile: coverImage o primera galería como fallback del video */}
+          {mobileHeroImg && (
             <Image
-              src={coverImage}
+              src={mobileHeroImg}
               alt={`Imagen principal del caso ${cliente}`}
-              width={1080}
-              height={1920}
+              width={800}
+              height={600}
               class="block h-full w-full object-cover md:hidden"
               style={focusStyle}
             />
