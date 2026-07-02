@@ -11,6 +11,7 @@ const casos = defineCollection({
     coverImage: image().optional(),
     galeria: z.array(image()).optional(),
     videos: z.array(z.string()).optional(),
+    heroFocus: z.string().optional(),
     orden: z.number().default(99),
   }),
 });

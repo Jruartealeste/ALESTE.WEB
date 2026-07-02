@@ -10,7 +10,8 @@ export async function getStaticPaths() {
 
 const { caso } = Astro.props;
 const { Content } = await render(caso);
-const { cliente, tipoTrabajo, anio, categoria, coverImage, galeria, videos } = caso.data;
+const { cliente, tipoTrabajo, anio, categoria, coverImage, galeria, videos, heroFocus } = caso.data;
+const focusStyle = heroFocus ? `object-position: ${heroFocus}` : undefined;
 
 // If there are videos, the first one is always the hero
 const heroVideo = videos?.[0] ?? null;
@@ -40,6 +41,7 @@ const hasGallery = galleryImages.length > 0 || galleryVideos.length > 0;
         <video
           src={heroVideo}
           class="h-full w-full object-cover"
+          style={focusStyle}
           autoplay
           muted
           loop
@@ -53,6 +55,7 @@ const hasGallery = galleryImages.length > 0 || galleryVideos.length > 0;
           width={1920}
           height={1080}
           class="h-full w-full object-cover"
+          style={focusStyle}
         />
       )}
     </div>
