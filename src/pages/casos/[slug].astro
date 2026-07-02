@@ -19,8 +19,6 @@ const galleryVideos = heroVideo ? (videos?.slice(1) ?? []) : [];
 // Image hero only when there are no videos
 const heroImg = !heroVideo ? (coverImage ?? galeria?.[0]) : null;
 const galleryImages = heroVideo ? (galeria ?? []) : (coverImage ? (galeria ?? []) : (galeria?.slice(1) ?? []));
-// Mobile fallback for video cases: coverImage or first gallery image
-const mobileHeroImg = heroVideo ? (coverImage ?? galeria?.[0] ?? null) : null;
 
 const hasGallery = galleryImages.length > 0 || galleryVideos.length > 0;
 ---
@@ -29,41 +27,26 @@ const hasGallery = galleryImages.length > 0 || galleryVideos.length > 0;
   <div class="bg-white">
 
   <!--
-    Hero pinneado por GSAP (150vh de scroll).
-    Texto: arriba (2 col — info + descripción), fade in place, no se mueve ("fijo").
-    Media: parallax suave hacia abajo ("acompaña bajando").
-    Overlay: se desvanece revelando el material en colores reales.
-    Al soltar el pin: galería y CTA continúan normalmente.
+    Mobile: #hero-outer crea 250vh de scroll. #caso-hero es sticky top-0 y se
+    comprime de h-screen a 56.25vw (16:9 al ancho del celular) via GSAP.
+    Desktop: #hero-outer es h-auto (wraps hero). GSAP pin maneja el scroll.
   -->
-  <section id="caso-hero" class="relative h-[55vh] overflow-hidden md:h-screen">
+  <div id="hero-outer" class="relative h-[250vh] md:h-auto">
+  <section id="caso-hero" class="sticky top-0 h-screen overflow-hidden md:static">
 
-    <!-- Media: full bleed, parallax suave con GSAP -->
+    <!-- Media: full bleed -->
     <div id="hero-media" class="absolute inset-0 will-change-transform">
       {heroVideo ? (
-        <>
-          {/* Video: solo en desktop (md+) */}
-          <video
-            src={heroVideo}
-            class="hidden h-full w-full object-cover md:block"
-            style={focusStyle}
-            autoplay
-            muted
-            loop
-            playsinline
-            preload="auto"
-          />
-          {/* Mobile: coverImage o primera galería como fallback del video */}
-          {mobileHeroImg && (
-            <Image
-              src={mobileHeroImg}
-              alt={`Imagen principal del caso ${cliente}`}
-              width={800}
-              height={600}
-              class="block h-full w-full object-cover md:hidden"
-              style={focusStyle}
-            />
-          )}
-        </>
+        <video
+          src={heroVideo}
+          class="h-full w-full object-cover"
+          style={focusStyle}
+          autoplay
+          muted
+          loop
+          playsinline
+          preload="auto"
+        />
       ) : heroImg && (
         <Image
           src={heroImg}
@@ -76,10 +59,10 @@ const hasGallery = galleryImages.length > 0 || galleryVideos.length > 0;
       )}
     </div>
 
-    <!-- Overlay: GSAP lo desvanece al hacer scroll -->
+    <!-- Overlay: se desvanece al hacer scroll -->
     <div id="hero-overlay" class="absolute inset-0 z-10 bg-black/75"></div>
 
-    <!-- Texto: queda fijo en su posición, fade in place (sin movimiento vertical) -->
+    <!-- Texto: fade in place, sin movimiento vertical -->
     <div id="hero-text" class="absolute inset-x-0 top-0 z-20 px-8 pt-16 md:px-16 md:pt-20">
       <a
         href="/casos"
@@ -103,6 +86,7 @@ const hasGallery = galleryImages.length > 0 || galleryVideos.length > 0;
     </div>
 
   </section>
+  </div>
 
   {hasGallery && (
     <section class="mx-auto max-w-5xl px-6 py-16">
@@ -160,15 +144,16 @@ const hasGallery = galleryImages.length > 0 || galleryVideos.length > 0;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   if (!reduceMotion) {
+    const outer   = document.getElementById('hero-outer');
     const hero    = document.getElementById('caso-hero');
     const overlay = document.getElementById('hero-overlay');
     const text    = document.getElementById('hero-text');
     const media   = document.getElementById('hero-media');
 
-    if (hero && overlay && text && media) {
+    if (hero && overlay && text && media && outer) {
       const mm = gsap.matchMedia();
 
-      // Desktop: hero pinneado, reveal largo y cinematográfico
+      // Desktop: pin cinematográfico (150vh de scroll extra)
       mm.add('(min-width: 768px)', () => {
         const tl = gsap.timeline({
           scrollTrigger: {
@@ -184,18 +169,23 @@ const hasGallery = galleryImages.length > 0 || galleryVideos.length > 0;
         tl.fromTo(media, { y: '0%' }, { y: '8%', ease: 'none' }, 0);
       });
 
-      // Mobile: sin pin (evita el espacio blanco), efecto corre mientras el hero sale del viewport
+      // Mobile: hero sticky, se comprime de full screen a 16:9 natural
+      // El outer wrapper (250vh) crea el scroll space; no hay pin extra
       mm.add('(max-width: 767px)', () => {
         const tl = gsap.timeline({
           scrollTrigger: {
-            trigger: hero,
+            trigger: outer,
             start: 'top top',
-            end: 'bottom top',
+            end: 'bottom top',  // 250vh de scroll total
             scrub: 1,
           }
         });
-        tl.fromTo(text, { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.4 }, 0);
+        // Texto: fade rápido en el primer 35% del scroll
+        tl.fromTo(text, { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.35 }, 0);
+        // Overlay: se desvanece a lo largo del scroll
         tl.fromTo(overlay, { opacity: 1 }, { opacity: 0, ease: 'none' }, 0);
+        // Hero: comprime de pantalla completa a 16:9 al ancho del celular
+        tl.fromTo(hero, { height: '100vh' }, { height: '56.25vw', ease: 'none' }, 0);
       });
     }
   }
