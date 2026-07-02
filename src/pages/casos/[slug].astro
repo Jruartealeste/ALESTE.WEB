@@ -166,24 +166,23 @@ const hasGallery = galleryImages.length > 0 || galleryVideos.length > 0;
     const media   = document.getElementById('hero-media');
 
     if (hero && overlay && text && media) {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: hero,
-          start: 'top top',
-          end: '+=150%',  // 150vh de scroll mientras el hero está pinneado
-          pin: true,
-          scrub: 1,
-        }
+      // Pin + animaciones solo en desktop — en mobile el hero es estático
+      const mm = gsap.matchMedia();
+      mm.add('(min-width: 768px)', () => {
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: hero,
+            start: 'top top',
+            end: '+=150%',
+            pin: true,
+            scrub: 1,
+          }
+        });
+
+        tl.fromTo(text, { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.4 }, 0);
+        tl.fromTo(overlay, { opacity: 1 }, { opacity: 0, ease: 'none' }, 0);
+        tl.fromTo(media, { y: '0%' }, { y: '8%', ease: 'none' }, 0);
       });
-
-      // Texto: fade in place — queda fijo, no se mueve, desaparece en los primeros ~40% del scroll
-      tl.fromTo(text, { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.4 }, 0);
-
-      // Overlay: se desvanece completamente a lo largo del scroll
-      tl.fromTo(overlay, { opacity: 1 }, { opacity: 0, ease: 'none' }, 0);
-
-      // Media: parallax suave hacia abajo — "acompaña bajando"
-      tl.fromTo(media, { y: '0%' }, { y: '8%', ease: 'none' }, 0);
     }
   }
 </script>
