@@ -19,6 +19,7 @@
     "tailwindcss": "^4.3.1"
   },
   "devDependencies": {
+    "cloudinary": "^2.10.0",
     "puppeteer": "^23.0.0"
   }
 }
