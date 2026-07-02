@@ -24,57 +24,59 @@ const hasGallery = galleryImages.length > 0 || galleryVideos.length > 0;
 
 <Layout title={`${cliente} — ${tipoTrabajo}`} description={`${cliente} — ${tipoTrabajo}`}>
   <div class="bg-white">
-  <section class="mx-auto max-w-6xl px-6 py-16">
-    <a
-      href="/casos"
-      class="inline-flex items-center gap-2 text-sm font-medium text-brand transition-[transform] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-x-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
-    >
-      &larr; Volver a casos
-    </a>
 
-    <div class="mt-8 grid gap-10 md:grid-cols-[1fr_2fr]">
-      <div>
-        <p class="text-sm font-medium text-placeholder">
-          {anio ? `${anio} · ` : ''}{categoria}
-        </p>
-        <h1 class="mt-2 text-3xl font-bold text-heading">{cliente}</h1>
-        <p class="mt-1 text-base font-medium text-brand">{tipoTrabajo}</p>
-      </div>
-      <div class="prose prose-neutral max-w-none text-body">
-        <Content />
-      </div>
-    </div>
-  </section>
+  <!-- Hero: full viewport, video/imagen como fondo, overlay oscuro que se revela al hacer scroll -->
+  <section id="caso-hero" class="relative h-screen overflow-hidden">
 
-  {heroImg && (
-    <div class="relative w-full overflow-hidden bg-white">
-      <Image
-        src={heroImg}
-        alt={`Imagen principal del caso ${cliente}`}
-        width={1400}
-        height={630}
-        class="aspect-[21/9] w-full object-cover opacity-95"
-      />
-      <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-    </div>
-  )}
-
-  {heroVideo && (
-    <div class="relative w-full overflow-hidden bg-white">
+    {heroVideo ? (
       <video
         src={heroVideo}
-        class="w-full"
+        class="absolute inset-0 h-full w-full object-cover"
         autoplay
         muted
         loop
         playsinline
         preload="auto"
       />
+    ) : heroImg && (
+      <Image
+        src={heroImg}
+        alt={`Imagen principal del caso ${cliente}`}
+        width={1920}
+        height={1080}
+        class="absolute inset-0 h-full w-full object-cover"
+      />
+    )}
+
+    <!-- Overlay oscuro: GSAP lo anima de opaco a transparente al hacer scroll -->
+    <div id="hero-overlay" class="absolute inset-0 bg-black/80"></div>
+
+    <!-- Texto superpuesto: GSAP lo mueve hacia arriba (parallax) al hacer scroll -->
+    <div id="hero-text" class="absolute inset-x-0 bottom-0 flex flex-col px-8 pb-14 md:px-16 md:pb-20">
+      <a
+        href="/casos"
+        class="mb-6 inline-flex items-center gap-2 text-sm font-medium text-white/60 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+      >
+        &larr; Volver a casos
+      </a>
+      <p class="text-sm font-medium text-white/50">
+        {anio ? `${anio} · ` : ''}{categoria}
+      </p>
+      <h1 class="mt-2 text-4xl font-bold text-white md:text-5xl">{cliente}</h1>
+      <p class="mt-2 text-base font-medium text-brand">{tipoTrabajo}</p>
     </div>
-  )}
+
+  </section>
+
+  <!-- Descripción del caso -->
+  <section class="mx-auto max-w-4xl px-6 py-16">
+    <div class="prose prose-neutral max-w-none text-body">
+      <Content />
+    </div>
+  </section>
 
   {hasGallery && (
-    <section class="mx-auto max-w-5xl px-6 py-16">
+    <section class="mx-auto max-w-5xl px-6 pb-16">
       <h2 class="text-center text-xs font-semibold uppercase tracking-widest text-placeholder">
         Piezas destacadas
       </h2>
@@ -117,5 +119,37 @@ const hasGallery = galleryImages.length > 0 || galleryVideos.length > 0;
       </a>
     </div>
   </div>
+
   </div>
 </Layout>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  gsap.registerPlugin(ScrollTrigger);
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!reduceMotion) {
+    const hero    = document.getElementById('caso-hero');
+    const overlay = document.getElementById('hero-overlay');
+    const text    = document.getElementById('hero-text');
+
+    if (hero && overlay && text) {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: hero,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 0.5,
+        }
+      });
+
+      // Overlay: negro opaco → transparente (revela colores reales del material)
+      tl.fromTo(overlay, { opacity: 1 }, { opacity: 0, ease: 'none' });
+
+      // Texto: parallax hacia arriba + fade — sale antes de que el hero termine
+      tl.fromTo(text, { y: 0, opacity: 1 }, { y: -80, opacity: 0, ease: 'none' }, '<');
+    }
+  }
+</script>
