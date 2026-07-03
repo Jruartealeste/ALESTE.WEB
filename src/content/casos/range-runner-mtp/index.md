@@ -3,6 +3,7 @@ cliente: "Fate"
 tipoTrabajo: "Video lanzamiento"
 categoria: "Campañas"
 orden: 9
+coverImage: "./01-Web-ALESTE-proyecto_1033x516-Range-Runer-MTP.jpg"
 videos:
   - "https://res.cloudinary.com/vvrb9wjt/video/upload/v1782996440/aleste/casos/range-runner-mtp/range-runner-mtp.mp4"
 ---

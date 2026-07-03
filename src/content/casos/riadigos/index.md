@@ -4,6 +4,7 @@ tipoTrabajo: "Corporativa y campañas"
 categoria: "Campañas"
 orden: 20
 coverImage: "./01 Web ALESTE-proyecto_1033x516 riadigos.png"
+coverSoloGrid: true
 galeria:
   - "./01 Web ALESTE-proyecto_1551x879 riadigos-37.png"
   - "./01 Web ALESTE-proyecto_1551x879 riadigos-38.png"

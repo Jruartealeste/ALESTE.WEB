@@ -3,6 +3,8 @@ cliente: "Bicentenario"
 tipoTrabajo: "Identidad visual"
 categoria: "Branding"
 orden: 12
+coverImage: "./logo.jpg"
+coverSoloGrid: true
 galeria:
   - "./01 Web ALESTE-proyecto_1551x879 bicentenario .png"
   - "./01 Web ALESTE-proyecto_1551x879 bicentenario-45.png"

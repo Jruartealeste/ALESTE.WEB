@@ -10,32 +10,45 @@ export async function getStaticPaths() {
 
 const { caso } = Astro.props;
 const { Content } = await render(caso);
-const { cliente, tipoTrabajo, anio, categoria, coverImage, galeria, videos, heroFocus } = caso.data;
+const { cliente, tipoTrabajo, anio, categoria, coverImage, galeria, videos, heroFocus, coverEnGaleria, coverSoloGrid } = caso.data;
 const focusStyle = heroFocus ? `object-position: ${heroFocus}` : undefined;
 
 // If there are videos, the first one is always the hero
 const heroVideo = videos?.[0] ?? null;
 const galleryVideos = heroVideo ? (videos?.slice(1) ?? []) : [];
-// Image hero only when there are no videos
-const heroImg = !heroVideo ? (coverImage ?? galeria?.[0]) : null;
-const galleryImages = heroVideo ? (galeria ?? []) : (coverImage ? (galeria ?? []) : (galeria?.slice(1) ?? []));
+
+// coverSoloGrid: coverImage only for the grid card — detail uses galeria[0] as hero
+// coverEnGaleria: coverImage also prepended to gallery pieces (only for video cases)
+const heroImg = !heroVideo
+  ? (coverSoloGrid ? (galeria?.[0] ?? null) : (coverImage ?? galeria?.[0]))
+  : null;
+const baseGalleryImages = heroVideo
+  ? (galeria ?? [])
+  : coverSoloGrid
+    ? (galeria?.slice(1) ?? [])
+    : (coverImage ? (galeria ?? []) : (galeria?.slice(1) ?? []));
+const galleryImages = (coverEnGaleria && coverImage && heroVideo) ? [coverImage, ...baseGalleryImages] : baseGalleryImages;
 
 const hasGallery = galleryImages.length > 0 || galleryVideos.length > 0;
+
+// Altura de compresión según ratio real del media hero:
+// Para videos asumimos 16:9. Para imágenes usamos las dimensiones reales.
+const heroAspectRatio = heroVideo
+  ? 9 / 16
+  : (heroImg?.width && heroImg?.height)
+    ? heroImg.height / heroImg.width
+    : 9 / 16;
+const compressedHeightVw = `${(heroAspectRatio * 100).toFixed(2)}vw`;
 ---
 
 <Layout title={`${cliente} — ${tipoTrabajo}`} description={`${cliente} — ${tipoTrabajo}`}>
   <div class="bg-white">
 
-  <!--
-    Mobile: #hero-outer crea 250vh de scroll. #caso-hero es sticky top-0 y se
-    comprime de h-screen a 56.25vw (16:9 al ancho del celular) via GSAP.
-    Desktop: #hero-outer es h-auto (wraps hero). GSAP pin maneja el scroll.
-  -->
-  <div id="hero-outer" class="relative h-[120vh] md:h-auto">
-  <section id="caso-hero" class="sticky top-0 h-screen overflow-hidden md:static">
+  <div id="hero-outer-mobile" class="relative h-[160vh] bg-white md:contents">
+  <section id="caso-hero" class="sticky top-0 h-screen overflow-hidden bg-black" data-target-height={compressedHeightVw}>
 
     <!-- Media: full bleed -->
-    <div id="hero-media" class="absolute inset-0 will-change-transform">
+    <div id="hero-media" class="absolute inset-0">
       {heroVideo ? (
         <video
           src={heroVideo}
@@ -88,6 +101,8 @@ const hasGallery = galleryImages.length > 0 || galleryVideos.length > 0;
   </section>
   </div>
 
+  <div class="relative bg-white">
+
   {hasGallery && (
     <section class="mx-auto max-w-5xl px-6 py-16">
       <h2 class="text-center text-xs font-semibold uppercase tracking-widest text-placeholder">
@@ -133,6 +148,7 @@ const hasGallery = galleryImages.length > 0 || galleryVideos.length > 0;
     </div>
   </div>
 
+  </div><!-- cierra gallery wrapper -->
   </div>
 </Layout>
 
@@ -144,48 +160,53 @@ const hasGallery = galleryImages.length > 0 || galleryVideos.length > 0;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   if (!reduceMotion) {
-    const outer   = document.getElementById('hero-outer');
-    const hero    = document.getElementById('caso-hero');
-    const overlay = document.getElementById('hero-overlay');
-    const text    = document.getElementById('hero-text');
-    const media   = document.getElementById('hero-media');
+    const hero       = document.getElementById('caso-hero');
+    const overlay    = document.getElementById('hero-overlay');
+    const text       = document.getElementById('hero-text');
+    const siteHeader = document.querySelector('header');
 
-    if (hero && overlay && text && media && outer) {
+    if (hero && overlay && text) {
+      const targetH = hero.getAttribute('data-target-height') ?? '56.25vw';
       const mm = gsap.matchMedia();
+      const hold = { _: 0 };
 
-      // Desktop: pin cinematográfico (150vh de scroll extra)
+      // Desktop: header+overlay+texto desaparecen al 40%, hold puro 40→70%, header vuelve 70→100%.
       mm.add('(min-width: 768px)', () => {
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: hero,
-            start: 'top top',
-            end: '+=150%',
-            pin: true,
-            scrub: 1,
-          }
+        const tl = gsap.timeline();
+        tl.fromTo(text,       { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.3 }, 0);
+        tl.fromTo(overlay,    { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.4 }, 0);
+        if (siteHeader) tl.fromTo(siteHeader, { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.4 }, 0);
+        tl.to(hold, { _: 1, ease: 'none', duration: 0.3 }); // hold puro 0.4→0.7
+        if (siteHeader) tl.fromTo(siteHeader, { opacity: 0 }, { opacity: 1, ease: 'none', duration: 0.3, immediateRender: false }, 0.7);
+
+        ScrollTrigger.create({
+          trigger: hero,
+          pin: true,
+          start: 'top top',
+          end: '+=100%',
+          scrub: 1,
+          animation: tl,
         });
-        tl.fromTo(text, { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.4 }, 0);
-        tl.fromTo(overlay, { opacity: 1 }, { opacity: 0, ease: 'none' }, 0);
-        tl.fromTo(media, { y: '0%' }, { y: '8%', ease: 'none' }, 0);
       });
 
-      // Mobile: hero sticky, se comprime de full screen a 16:9 natural
-      // El outer wrapper (250vh) crea el scroll space; no hay pin extra
+      // Mobile: header desaparece con overlay, reaparece al 75% (mientras galería asoma).
       mm.add('(max-width: 767px)', () => {
+        const mobileOuter = document.getElementById('hero-outer-mobile');
+        if (!mobileOuter) return;
         const tl = gsap.timeline({
           scrollTrigger: {
-            trigger: outer,
+            trigger: mobileOuter,
             start: 'top top',
-            end: 'bottom top',  // 160vh de scroll total
+            end: 'bottom top',
             scrub: 1,
           }
         });
-        // Texto: fade rápido en el primer 35% del scroll
-        tl.fromTo(text, { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.35 }, 0);
-        // Overlay: se desvanece a lo largo del scroll
-        tl.fromTo(overlay, { opacity: 1 }, { opacity: 0, ease: 'none' }, 0);
-        // Hero: comprime de pantalla completa a 16:9 al ancho del celular
-        tl.fromTo(hero, { height: '100vh' }, { height: '56.25vw', ease: 'none' }, 0);
+        tl.fromTo(text,       { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.25 }, 0);
+        tl.fromTo(overlay,    { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.4 }, 0);
+        if (siteHeader) tl.fromTo(siteHeader, { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.4 }, 0);
+        tl.fromTo(hero,       { height: '100vh' }, { height: targetH, ease: 'none', duration: 0.4 }, 0.25);
+        tl.to(hold,           { _: 1, ease: 'none', duration: 0.1 }); // hold puro 0.65→0.75
+        if (siteHeader) tl.fromTo(siteHeader, { opacity: 0 }, { opacity: 1, ease: 'none', duration: 0.25, immediateRender: false }, 0.75);
       });
     }
   }

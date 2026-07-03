@@ -3,6 +3,8 @@ cliente: "Gihon"
 tipoTrabajo: "Identidad corporativa"
 categoria: "Branding"
 orden: 14
+coverImage: "./01-Web-ALESTE-proyecto_1033x516-gihon.jpg"
+coverSoloGrid: true
 galeria:
   - "./01-Web-ALESTE-proyecto_1551x879-gihon-64.jpg"
   - "./01-Web-ALESTE-proyecto_1551x879-gihon-65.jpg"

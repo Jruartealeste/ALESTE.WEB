@@ -41,49 +41,31 @@ const casos = todosLosCasos.sort((a, b) => a.data.orden - b.data.orden);
     <div class="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3" id="grilla-casos">
       {casos.map((caso) => {
         const mediaSrc = caso.data.coverImage ?? caso.data.galeria?.[0];
-        const hasVideo = !!(caso.data.videos?.length);
+        const focusStyle = caso.data.heroFocus ? `object-position: ${caso.data.heroFocus}` : undefined;
         return (
           <a
             href={`/casos/${caso.id}`}
             data-categoria={caso.data.categoria}
-            class="caso-card group relative block overflow-hidden rounded-2xl shadow-[0_1px_2px_rgba(0,0,0,0.04),0_16px_32px_-16px_rgba(0,0,0,0.25)] transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-1 hover:shadow-[0_4px_8px_rgba(0,0,0,0.06),0_24px_40px_-16px_rgba(247,50,1,0.3)]"
+            class="caso-card group block overflow-hidden shadow-[0_1px_2px_rgba(0,0,0,0.04),0_16px_32px_-16px_rgba(0,0,0,0.25)] transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-1 hover:shadow-[0_4px_8px_rgba(0,0,0,0.06),0_24px_40px_-16px_rgba(247,50,1,0.3)]"
           >
             {mediaSrc ? (
-              <Image
-                src={mediaSrc}
-                alt={`${caso.data.cliente} — ${caso.data.tipoTrabajo}`}
-                width={600}
-                height={450}
-                class="h-72 w-full object-cover transition-[transform] duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:scale-105"
-                loading="lazy"
-              />
+              <div class="relative aspect-[2/1] w-full overflow-hidden">
+                <Image
+                  src={mediaSrc}
+                  alt={`${caso.data.cliente} — ${caso.data.tipoTrabajo}`}
+                  width={800}
+                  height={400}
+                  class="absolute inset-0 h-full w-full object-cover transition-[transform] duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:scale-105"
+                  loading="lazy"
+                />
+              </div>
             ) : (
-              <div class="flex h-72 w-full items-center justify-center bg-brand-dark">
+              <div class="flex aspect-[2/1] w-full items-center justify-center bg-brand-dark">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white/50" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M8 5v14l11-7z" />
                 </svg>
               </div>
             )}
-            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-            <div class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-5">
-              <div>
-                <p class="text-lg font-bold text-white">{caso.data.cliente}</p>
-                <p class="text-sm font-medium text-white/85">{caso.data.tipoTrabajo}</p>
-              </div>
-              <div class="flex flex-col items-end gap-1.5">
-                <span class="rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white backdrop-blur-sm">
-                  {caso.data.anio ? `${caso.data.anio} · ` : ''}{caso.data.categoria}
-                </span>
-                {hasVideo && (
-                  <span class="flex items-center gap-1 rounded-full bg-white/15 px-2.5 py-1 text-xs font-medium text-white backdrop-blur-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                    Video
-                  </span>
-                )}
-              </div>
-            </div>
           </a>
         );
       })}
