@@ -3,6 +3,8 @@ cliente: "Aluar"
 tipoTrabajo: "Campaña institucional"
 categoria: "Campañas"
 orden: 2
+coverImage: "./cover.jpg"
+coverSoloGrid: true
 galeria:
   - "./01 Web ALESTE-proyecto 2025_1551x879 aluar-02.jpg"
   - "./01 Web ALESTE-proyecto 2025_1551x879 aluar-03.jpg"

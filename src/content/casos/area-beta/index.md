@@ -3,6 +3,8 @@ cliente: "Area Beta"
 tipoTrabajo: "Redes"
 categoria: "Redes"
 orden: 13
+coverImage: "./COVER.jpg"
+coverSoloGrid: true
 galeria:
   - "./01-Web-ALESTE-proyecto_1551x879-areabeta-56.jpg"
   - "./01-Web-ALESTE-proyecto_1551x879-areabeta-57.jpg"

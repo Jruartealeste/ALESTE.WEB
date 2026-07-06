@@ -3,9 +3,9 @@ cliente: "Puertos"
 tipoTrabajo: "Identidad corporativa"
 categoria: "Branding"
 orden: 18
-coverImage: "./01 Web ALESTE-proyecto_1033x516 Puertos.png"
+coverImage: "./01 Web ALESTE-proyecto_1551x879 Puertos-10.png"
 galeria:
-  - "./01 Web ALESTE-proyecto_1551x879 Puertos-10.png"
+  - "./01 Web ALESTE-proyecto_1033x516 Puertos.png"
   - "./01 Web ALESTE-proyecto_1551x879 Puertos-11.png"
 ---
 

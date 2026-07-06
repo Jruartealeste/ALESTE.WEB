@@ -3,6 +3,8 @@ cliente: "Astor"
 tipoTrabajo: "Estatuilla premio cinematográfico"
 categoria: "Branding"
 orden: 8
+coverImage: "./COVER.jpg"
+coverSoloGrid: true
 galeria:
   - "./01-Web-ALESTE-proyecto_1551x879-premio.jpg"
 ---

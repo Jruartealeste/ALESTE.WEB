@@ -3,6 +3,8 @@ cliente: "Fate"
 tipoTrabajo: "Redes"
 categoria: "Redes"
 orden: 15
+coverImage: "./COVER.jpg"
+coverSoloGrid: true
 galeria:
   - "./01-Web-ALESTE-proyecto_1551x879-redes-Fate-71.jpg"
   - "./01-Web-ALESTE-proyecto_1551x879-redes-Fate-72.jpg"
