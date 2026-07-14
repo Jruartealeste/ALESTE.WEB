@@ -1,84 +1,316 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { clientes } from '../data/clientes';
+import ClientLogosCarousel from '../components/ClientLogosCarousel.astro';
+
+const creencias = [
+  {
+    title: 'Los detalles y las personas',
+    text: 'Creemos que los detalles importan. Y las personas más. Que el tiempo es necesario.',
+    icon: 'M12 3l1.8 5.4L19 10l-5.2 1.6L12 17l-1.8-5.4L5 10l5.2-1.6L12 3z',
+  },
+  {
+    title: 'El diálogo y los vínculos',
+    text: 'Creemos en generar vínculos. En el diálogo. En que cada trabajo es una experiencia nueva.',
+    icon: 'M21 11.5a8.4 8.4 0 01-4.7 7.6 8.4 8.4 0 01-6.6.3L4 21l1.4-5.5a8.4 8.4 0 01-1.4-4.7A8.4 8.4 0 0112.5 3a8.4 8.4 0 018.5 8.5z',
+  },
+  {
+    title: 'Aprender y mejorar',
+    text: 'En que todos aprendemos. En lo nuevo como forma de mejorar lo conocido.',
+    icon: 'M21 12a9 9 0 11-3-6.7M21 3v6h-6',
+  },
+  {
+    title: 'El humor y lo simple',
+    text: 'Creemos en el humor, y en reír mientras se trabaja. En la fuerza fenomenal de lo simple.',
+    icon: 'M12 21a9 9 0 100-18 9 9 0 000 18zM8.5 10.5h.01M15.5 10.5h.01M8 14.5s1.5 2 4 2 4-2 4-2',
+  },
+  {
+    title: 'Una agencia, una familia',
+    text: 'Que una agencia puede ser un poco una familia. En lo diario y cotidiano. En que cada cliente es un miembro más de esto que somos.',
+    icon: 'M17 20v-1.5a3.5 3.5 0 00-3.5-3.5h-3A3.5 3.5 0 007 18.5V20M12 12a3 3 0 100-6 3 3 0 000 6zM21 20v-1.5a3 3 0 00-2.2-2.9M15.8 5.1A3 3 0 0117 7.7',
+  },
+  {
+    title: 'El servicio y las palabras',
+    text: 'En el servicio. En el poder de las palabras. Y de la comunicación. En las ideas.',
+    icon: 'M9 18h6M10 22h4M12 2a7 7 0 00-4 12.7c.5.4.8 1 .8 1.7v.6h6.4v-.6c0-.7.3-1.3.8-1.7A7 7 0 0012 2z',
+  },
+];
+
+const izquierda = creencias.slice(0, 3);
+const derecha = creencias.slice(3, 6);
+
+// Tokeniza preservando los espacios como elementos separados (no se envuelven en span)
+// para que el wrap de línea siga siendo el nativo del navegador.
+function splitWords(text: string) {
+  return text.split(/(\s+)/).filter(Boolean);
+}
+
+const citaTokens = splitWords('Creemos que comunicar bien es tan importante como lo que se comunica.');
+const sobreNosotrosTituloTokens = splitWords('Sobre nosotros');
+const sobreNosotrosParrafos = [
+  'Si el viento te trajo ALESTE, quizás sea justo lo que necesitás. Aquí hay un equipo que busca y encuentra ideas. Redactamos, diseñamos, ilustramos y animamos. Creamos identidades y les damos vida.',
+  'Visualizamos las ideas como sistemas. Funcionando, siendo parte de redes de medios y plataformas adecuadas a tu marca y objetivos. Analizamos tu necesidad, tu mercado y generamos una respuesta de medios que integre todas las posibilidades y contextos.',
+  'Somos ante todo un grupo humano, personas que se tratan bien.',
+  'Sí. Estás en un buen lugar. Llegaste ALESTE.',
+].map((text) => splitWords(text));
+
+const equipoFotos = [
+  '/equipo/equipo-1.jpg',
+  '/equipo/equipo-2.jpg',
+  '/equipo/equipo-3.jpg',
+  '/equipo/equipo-4.jpg',
+  '/equipo/equipo-5.jpg',
+  '/equipo/equipo-6.jpg',
+];
 ---
 
 <Layout title="Quiénes somos" description="Conocé al equipo detrás de ALESTE: en qué creemos y cómo trabajamos la comunicación de nuestros clientes.">
-  <section class="bg-brand px-6 py-20 text-white">
-    <div class="mx-auto max-w-3xl text-center">
-      <p class="text-2xl font-bold leading-snug md:text-3xl">
-        Creemos que comunicar bien es tan importante como lo que se comunica.
+  <div class="relative">
+    <section id="cita" class="sticky top-0 z-0 flex min-h-[100dvh] items-center justify-center bg-brand px-6 py-20 text-white">
+      <div data-wipe-out class="mx-auto max-w-3xl text-center">
+        <p class="text-2xl font-bold leading-snug md:text-3xl">
+          {citaTokens.map((token) =>
+            /\s+/.test(token) ? token : <span class="reveal-word inline-block">{token}</span>
+          )}
+        </p>
+      </div>
+    </section>
+
+    <section id="sobre-nosotros" class="sticky top-0 z-10 flex min-h-[100dvh] flex-col justify-center bg-brand-dark px-6 py-20 text-white">
+      <div data-wipe-in class="mx-auto max-w-3xl">
+        <h2 class="text-2xl font-semibold leading-snug md:text-3xl">
+          {sobreNosotrosTituloTokens.map((token) =>
+            /\s+/.test(token) ? token : <span class="reveal-word inline-block">{token}</span>
+          )}
+        </h2>
+        <div class="mt-6 flex flex-col gap-5 text-white/80">
+          {sobreNosotrosParrafos.map((tokens, i) => (
+            <p class={i === sobreNosotrosParrafos.length - 1 ? 'font-semibold text-white' : ''}>
+              {tokens.map((token) =>
+                /\s+/.test(token) ? token : <span class="reveal-word inline-block">{token}</span>
+              )}
+            </p>
+          ))}
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="bg-white px-6 py-24">
+    <div class="mx-auto max-w-6xl">
+      <div class="flex flex-col items-center text-center">
+        <h2 class="text-2xl font-semibold leading-snug text-heading md:text-3xl">En qué creemos</h2>
+        <span class="mt-4 h-1 w-20 bg-brand"></span>
+        <p class="mt-6 max-w-xl text-body">Nuestro panteón de creencias es gigantesco.</p>
+      </div>
+
+      <div class="mt-16 grid grid-cols-1 gap-x-8 gap-y-14 md:grid-cols-3">
+        <div class="flex flex-col gap-12">
+          {izquierda.map((item) => (
+            <div class="group flex flex-col gap-3">
+              <div class="flex items-center gap-3">
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand transition-[transform,background-color] duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:-translate-y-0.5 group-hover:bg-brand/20">
+                  <svg viewBox="0 0 24 24" fill="none" class="h-5 w-5" aria-hidden="true">
+                    <path d={item.icon} stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </div>
+                <h3 class="text-base font-bold text-heading">{item.title}</h3>
+              </div>
+              <p class="pl-[52px] text-[13px] leading-relaxed text-body">{item.text}</p>
+            </div>
+          ))}
+        </div>
+
+        <div class="order-first flex items-center justify-center md:order-none">
+          <div class="relative w-full max-w-xs">
+            <div class="absolute -inset-3 -z-10 rounded-2xl border-4 border-brand/15"></div>
+            <div class="team-carousel relative aspect-square overflow-hidden rounded-2xl shadow-[0_1px_2px_rgba(0,0,0,0.04),0_24px_48px_-20px_rgba(247,50,1,0.35)]">
+              {equipoFotos.map((foto, i) => (
+                <img
+                  src={foto}
+                  alt="Equipo de ALESTE"
+                  class="team-carousel-slide absolute inset-0 h-full w-full object-cover"
+                  style={`animation-delay: ${i * 4}s;`}
+                  loading={i === 0 ? 'eager' : 'lazy'}
+                />
+              ))}
+            </div>
+            <div class="mt-4 flex justify-center gap-2">
+              {equipoFotos.map((_, i) => (
+                <span class="team-carousel-dot h-1.5 w-1.5 rounded-full bg-brand/20" style={`animation-delay: ${i * 4}s;`}></span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-12">
+          {derecha.map((item) => (
+            <div class="group flex flex-col gap-3">
+              <div class="flex items-center gap-3">
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand transition-[transform,background-color] duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:-translate-y-0.5 group-hover:bg-brand/20">
+                  <svg viewBox="0 0 24 24" fill="none" class="h-5 w-5" aria-hidden="true">
+                    <path d={item.icon} stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </div>
+                <h3 class="text-base font-bold text-heading">{item.title}</h3>
+              </div>
+              <p class="pl-[52px] text-[13px] leading-relaxed text-body">{item.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <p class="mx-auto mt-20 max-w-lg text-center text-lg font-semibold italic text-heading">
+        Creemos que una idea bien direccionada siempre llega a destino.
       </p>
     </div>
   </section>
 
-  <section class="bg-brand-dark px-6 py-20 text-white">
-    <div class="mx-auto max-w-6xl">
-      <h2 class="text-2xl font-semibold leading-snug md:text-3xl">Sobre nosotros</h2>
-      <p class="mt-4 max-w-2xl text-white/80">
-        Somos una agencia de comunicación 360° que trabaja junto a sus clientes desde la estrategia hasta la pieza final,
-        cuidando que cada mensaje sea coherente en todos los canales.
-      </p>
-    </div>
-  </section>
-
-  <section class="px-6 py-20">
-    <div class="mx-auto max-w-6xl">
-      <h2 class="text-2xl font-semibold leading-snug text-heading md:text-3xl">En qué creemos</h2>
-      <div class="mt-8 grid gap-8 sm:grid-cols-3">
-        {[
-          ['Coherencia', 'Cada pieza debe hablar el mismo idioma de marca, sin importar el canal.'],
-          ['Resultados', 'La comunicación tiene que poder medirse, no solo verse bien.'],
-          ['Cercanía', 'Trabajamos junto al cliente, no para el cliente.'],
-        ].map(([title, text]) => (
-          <div>
-            <h3 class="text-lg font-bold text-heading">{title}</h3>
-            <p class="mt-2 text-body">{text}</p>
-          </div>
-        ))}
+  <div class="relative">
+    <section id="clientes" class="sticky top-0 z-0 flex min-h-[100dvh] flex-col justify-center bg-white px-6 py-20">
+      <div class="mx-auto max-w-6xl w-full">
+        <h2 data-wipe-out class="text-center text-2xl font-semibold leading-snug text-heading md:text-3xl">Clientes que confiaron en nosotros</h2>
+        <ClientLogosCarousel clientes={clientes} />
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="mx-auto max-w-6xl px-6 py-20">
-    <h2 class="text-2xl font-semibold leading-snug text-heading md:text-3xl">Nuestro equipo</h2>
-    <div class="mt-8">
-      <img
-        src="https://placehold.co/1200x500?text=Equipo+ALESTE"
-        alt="Equipo de ALESTE"
-        class="w-full rounded-2xl object-cover shadow-[0_1px_2px_rgba(0,0,0,0.04),0_16px_32px_-16px_rgba(0,0,0,0.25)]"
-        loading="lazy"
-      />
-    </div>
-  </section>
-
-  <section class="bg-white px-6 py-20">
-    <div class="mx-auto max-w-6xl">
-      <h2 class="text-center text-2xl font-semibold leading-snug text-heading md:text-3xl">Clientes que confiaron en nosotros</h2>
-      <div class="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-4">
-        {clientes.map((cliente) => (
-          <div class="flex items-center justify-center rounded-xl bg-black/5 p-6 transition-[transform] duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-0.5">
-            <img
-              src={cliente.logo ?? `https://placehold.co/160x80?text=${encodeURIComponent(cliente.name)}`}
-              alt={cliente.name}
-              class="h-auto w-full grayscale"
-              loading="lazy"
-            />
-          </div>
-        ))}
+    <section id="cta-final" class="sticky top-0 z-10 flex min-h-[100dvh] flex-col items-center justify-center bg-black px-6 py-20 text-center text-white">
+      <div data-wipe-in class="mx-auto max-w-3xl">
+        <p class="text-xl font-semibold">
+          Si tu marca tiene algo para decir, queremos ayudarte a decirlo bien.
+        </p>
+        <a
+          href="/contacto"
+          class="mt-7 inline-block rounded-full bg-brand px-7 py-3 text-[15px] font-medium text-white shadow-[0_4px_14px_-2px_rgba(247,50,1,0.45)] transition-[transform,box-shadow] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-0.5 hover:shadow-[0_8px_20px_-4px_rgba(247,50,1,0.55)] focus-visible:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white active:translate-y-0"
+        >
+          Hablemos
+        </a>
       </div>
-    </div>
-  </section>
-
-  <section class="mx-auto max-w-3xl px-6 py-20 text-center">
-    <p class="text-xl font-semibold text-heading">
-      Si tu marca tiene algo para decir, queremos ayudarte a decirlo bien.
-    </p>
-    <a
-      href="/contacto"
-      class="mt-7 inline-block rounded-full bg-brand px-7 py-3 text-[15px] font-medium text-white shadow-[0_4px_14px_-2px_rgba(247,50,1,0.45)] transition-[transform,box-shadow] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-0.5 hover:shadow-[0_8px_20px_-4px_rgba(247,50,1,0.55)] focus-visible:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand active:translate-y-0"
-    >
-      Hablemos
-    </a>
-  </section>
+    </section>
+  </div>
 </Layout>
+
+<style>
+  .team-carousel-slide {
+    opacity: 0;
+    animation: team-fade 24s infinite;
+    animation-fill-mode: backwards;
+  }
+
+  .team-carousel-dot {
+    animation: team-dot 24s infinite;
+    animation-fill-mode: backwards;
+  }
+
+  @keyframes team-fade {
+    0%,
+    100% {
+      opacity: 0;
+    }
+    2% {
+      opacity: 1;
+    }
+    14% {
+      opacity: 1;
+    }
+    16.6% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes team-dot {
+    0%,
+    100% {
+      background-color: rgb(247 50 1 / 0.2);
+      transform: scale(1);
+    }
+    2%,
+    14% {
+      background-color: rgb(247 50 1 / 1);
+      transform: scale(1.3);
+    }
+    16.6% {
+      background-color: rgb(247 50 1 / 0.2);
+      transform: scale(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .team-carousel-slide,
+    .team-carousel-dot {
+      animation: none;
+    }
+    .team-carousel-slide:first-child {
+      opacity: 1;
+    }
+    .team-carousel-dot:first-child {
+      background-color: rgb(247 50 1 / 1);
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // ── Scroll-wipe entre secciones pineadas (mismo efecto que el home) ───────
+  const wipePairs = [
+    ['cita', 'sobre-nosotros'],
+    ['clientes', 'cta-final'],
+  ];
+
+  for (const [prevId, nextId] of wipePairs) {
+    const prevSection = document.getElementById(prevId);
+    const nextSection = document.getElementById(nextId);
+    if (!prevSection || !nextSection) continue;
+
+    const outgoing = prevSection.querySelector('[data-wipe-out]');
+    const incoming = nextSection.querySelector('[data-wipe-in]');
+    if (!outgoing || !incoming) continue;
+
+    ScrollTrigger.create({
+      trigger: nextSection,
+      start: 'top bottom',
+      end: 'top top',
+      scrub: true,
+      onUpdate(self) {
+        gsap.set(outgoing, { opacity: 1 - self.progress, y: self.progress * -24 });
+        gsap.set(incoming, { opacity: self.progress, y: (1 - self.progress) * 24 });
+      },
+    });
+  }
+
+  // ── Text reveal palabra por palabra (solo cita + sobre-nosotros) ──────────
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function setupWordReveal(sectionSelector: string, start: string, maxSequenceMs = 1400) {
+    const words = gsap.utils.toArray<HTMLElement>(`${sectionSelector} .reveal-word`);
+    if (!words.length) return;
+
+    // El stagger se achica en bloques con muchas palabras para no alargar la
+    // secuencia más allá de maxSequenceMs.
+    const stagger = Math.min(0.035, maxSequenceMs / 1000 / words.length);
+
+    gsap.set(words, { opacity: 0, y: 14, filter: 'blur(8px)' });
+    gsap.to(words, {
+      opacity: 1,
+      y: 0,
+      filter: 'blur(0px)',
+      duration: 0.5,
+      stagger,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: sectionSelector,
+        start,
+        toggleActions: 'play none none reverse',
+      },
+    });
+  }
+
+  if (!reduceMotion) {
+    setupWordReveal('#cita', 'top 85%');
+    setupWordReveal('#sobre-nosotros', 'top 85%');
+  }
+</script>
