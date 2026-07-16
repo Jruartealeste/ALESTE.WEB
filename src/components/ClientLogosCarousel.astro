@@ -3,20 +3,25 @@ import type { Cliente } from '../data/clientes';
 
 interface Props {
   clientes: Cliente[];
+  theme?: 'light' | 'brand';
 }
 
-const { clientes } = Astro.props;
+const { clientes, theme = 'light' } = Astro.props;
 const pista = [...clientes, ...clientes];
+const edgeFrom = theme === 'brand' ? 'from-brand' : 'from-white';
+const cardBg = theme === 'brand'
+  ? 'bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_24px_-12px_rgba(37,20,38,0.35)]'
+  : 'bg-black/5';
 ---
 
 <div class="group relative mt-10 overflow-hidden">
-  <div class="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-white to-transparent sm:w-24"></div>
-  <div class="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-white to-transparent sm:w-24"></div>
+  <div class={`pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r ${edgeFrom} to-transparent sm:w-24`}></div>
+  <div class={`pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l ${edgeFrom} to-transparent sm:w-24`}></div>
 
   <div class="animate-marquee flex w-max items-center gap-10 group-hover:[animation-play-state:paused] sm:gap-14">
     {pista.map((cliente, i) => (
       <div
-        class="flex h-20 w-36 flex-shrink-0 items-center justify-center rounded-xl bg-black/5 p-5 transition-[transform] duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-0.5"
+        class={`flex h-20 w-36 flex-shrink-0 items-center justify-center rounded-xl ${cardBg} p-5 transition-[transform,background-color] duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-0.5`}
         aria-hidden={i >= clientes.length ? 'true' : undefined}
       >
         <img
