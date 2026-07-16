@@ -318,7 +318,7 @@ const equipoFotos = [
   // ── Text reveal palabra por palabra (solo cita + sobre-nosotros) ──────────
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  function setupWordReveal(root: string | Element, start: string, maxSequenceMs = 1400) {
+  function setupWordReveal(root: string | Element, start: string, maxSequenceMs = 1400, toggleActions = 'play none none reverse') {
     const rootEl = typeof root === 'string' ? document.querySelector(root) : root;
     if (!rootEl) return;
     const words = gsap.utils.toArray<HTMLElement>(rootEl.querySelectorAll('.reveal-word'));
@@ -339,7 +339,7 @@ const equipoFotos = [
       scrollTrigger: {
         trigger: rootEl,
         start,
-        toggleActions: 'play none none reverse',
+        toggleActions,
       },
     });
   }
@@ -356,6 +356,6 @@ const equipoFotos = [
     });
 
     const creemosFinal = document.querySelector('#creemos .creemos-final');
-    if (creemosFinal) setupWordReveal(creemosFinal, 'top 85%', 900);
+    if (creemosFinal) setupWordReveal(creemosFinal, 'top 100%', 900, 'play none none none');
   }
 </script>
