@@ -14,8 +14,9 @@ const { cliente, tipoTrabajo, anio, categoria, coverImage, galeria, videos, hero
 const focusStyle = heroFocus ? `object-position: ${heroFocus}` : undefined;
 
 // If there are videos, the first one is always the hero
+// El hero (video o foto) también se repite en "piezas destacadas", aunque quede duplicado
 const heroVideo = videos?.[0] ?? null;
-const galleryVideos = heroVideo ? (videos?.slice(1) ?? []) : [];
+const galleryVideos = heroVideo ? (videos ?? []) : [];
 
 // coverSoloGrid: coverImage only for the grid card — detail uses galeria[0] as hero
 // coverEnGaleria: coverImage also prepended to gallery pieces (only for video cases)
@@ -25,8 +26,8 @@ const heroImg = !heroVideo
 const baseGalleryImages = heroVideo
   ? (galeria ?? [])
   : coverSoloGrid
-    ? (galeria?.slice(1) ?? [])
-    : (coverImage ? (galeria ?? []) : (galeria?.slice(1) ?? []));
+    ? (galeria ?? [])
+    : (coverImage ? [coverImage, ...(galeria ?? [])] : (galeria ?? []));
 const galleryImages = (coverEnGaleria && coverImage && heroVideo) ? [coverImage, ...baseGalleryImages] : baseGalleryImages;
 
 const hasGallery = galleryImages.length > 0 || galleryVideos.length > 0;
@@ -44,7 +45,7 @@ const compressedHeightVw = `${(heroAspectRatio * 100).toFixed(2)}vw`;
 <Layout title={`${cliente} — ${tipoTrabajo}`} description={`${cliente} — ${tipoTrabajo}`}>
   <div class="bg-white">
 
-  <div id="hero-outer-mobile" class="relative h-[160vh] bg-white md:contents">
+  <div id="hero-outer-mobile" class="relative h-[120vh] bg-white md:contents">
   <section id="caso-hero" class="sticky top-0 h-screen overflow-hidden bg-black" data-target-height={compressedHeightVw}>
 
     <!-- Media: full bleed -->
@@ -138,7 +139,6 @@ const compressedHeightVw = `${(heroAspectRatio * 100).toFixed(2)}vw`;
   <div class="mx-auto max-w-4xl px-6 py-16">
     <div class="flex flex-col items-center gap-4 rounded-2xl bg-brand-dark px-8 py-12 text-center text-white">
       <h2 class="text-2xl font-bold">¿Tenés un desafío parecido?</h2>
-      <p class="max-w-md text-white/80">Hablemos de cómo podemos ayudarte a comunicarlo.</p>
       <a
         href="/contacto"
         class="mt-2 rounded-full bg-brand px-7 py-3 text-[15px] font-medium text-white shadow-[0_4px_14px_-2px_rgba(247,50,1,0.45)] transition-[transform,box-shadow] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-0.5 hover:shadow-[0_8px_20px_-4px_rgba(247,50,1,0.55)] focus-visible:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand active:translate-y-0"

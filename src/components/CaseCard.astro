@@ -16,7 +16,7 @@ const mediaSrc = caso.data.coverImage ?? caso.data.galeria?.[0];
   href={`/casos/${caso.id}`}
   data-categoria={filterable ? caso.data.categoria : undefined}
   class:list={[
-    'case-card group relative block overflow-hidden shadow-[0_1px_2px_rgba(0,0,0,0.04),0_16px_32px_-16px_rgba(0,0,0,0.25)] transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-1 hover:shadow-[0_4px_8px_rgba(0,0,0,0.06),0_24px_40px_-16px_rgba(247,50,1,0.3)] focus-visible:-translate-y-1 focus-visible:shadow-[0_4px_8px_rgba(0,0,0,0.06),0_24px_40px_-16px_rgba(247,50,1,0.3)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand [&.is-revealed]:-translate-y-1 [&.is-revealed]:shadow-[0_4px_8px_rgba(0,0,0,0.06),0_24px_40px_-16px_rgba(247,50,1,0.3)]',
+    'case-card group relative block overflow-hidden rounded-2xl shadow-[0_1px_2px_rgba(0,0,0,0.04),0_16px_32px_-16px_rgba(0,0,0,0.25)] transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-1 hover:shadow-[0_4px_8px_rgba(0,0,0,0.06),0_24px_40px_-16px_rgba(247,50,1,0.3)] focus-visible:-translate-y-1 focus-visible:shadow-[0_4px_8px_rgba(0,0,0,0.06),0_24px_40px_-16px_rgba(247,50,1,0.3)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand [&.is-revealed]:-translate-y-1 [&.is-revealed]:shadow-[0_4px_8px_rgba(0,0,0,0.06),0_24px_40px_-16px_rgba(247,50,1,0.3)]',
     filterable && 'caso-card',
   ]}
 >
@@ -40,7 +40,10 @@ const mediaSrc = caso.data.coverImage ?? caso.data.galeria?.[0];
   </div>
 
   <div
-    class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-0 transition-opacity duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:opacity-100 group-focus-visible:opacity-100 group-[.is-revealed]:opacity-100"
+    class="pointer-events-none absolute inset-0 bg-gradient-to-t from-brand/90 via-brand/30 to-transparent mix-blend-multiply opacity-0 transition-opacity duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:opacity-100 group-focus-visible:opacity-100 group-[.is-revealed]:opacity-100"
+  ></div>
+  <div
+    class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:opacity-100 group-focus-visible:opacity-100 group-[.is-revealed]:opacity-100"
   ></div>
   <div
     class="pointer-events-none absolute inset-x-0 bottom-0 translate-y-2 p-5 opacity-0 transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100 group-[.is-revealed]:translate-y-0 group-[.is-revealed]:opacity-100"

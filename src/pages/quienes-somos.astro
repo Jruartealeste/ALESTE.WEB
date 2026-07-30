@@ -50,7 +50,6 @@ const izquierda = creencias.slice(0, 3);
 const derecha = creencias.slice(3, 6);
 
 const creenciasTituloTokens = splitWords('En qué creemos');
-const creenciasSubtituloTokens = splitWords('Nuestro panteón de creencias es gigantesco.');
 const creenciasFinalTokens = splitWords('Creemos que una idea bien direccionada siempre llega a destino.');
 
 const citaTokens = splitWords('Creemos que comunicar bien es tan importante como lo que se comunica.');
@@ -112,11 +111,6 @@ const equipoFotos = [
             )}
           </h2>
           <span class="mt-4 h-1 w-20 bg-brand"></span>
-          <p class="mt-6 max-w-xl text-body">
-            {creenciasSubtituloTokens.map((token) =>
-              /\s+/.test(token) ? token : <span class="reveal-word inline-block">{token}</span>
-            )}
-          </p>
         </div>
 
         <div class="mt-16 grid grid-cols-1 gap-x-8 gap-y-14 md:grid-cols-3">
@@ -155,11 +149,6 @@ const equipoFotos = [
                     style={`animation-delay: ${i * 4}s;`}
                     loading={i === 0 ? 'eager' : 'lazy'}
                   />
-                ))}
-              </div>
-              <div class="mt-4 flex justify-center gap-2">
-                {equipoFotos.map((_, i) => (
-                  <span class="team-carousel-dot h-1.5 w-1.5 rounded-full bg-brand/20" style={`animation-delay: ${i * 4}s;`}></span>
                 ))}
               </div>
             </div>
@@ -228,11 +217,6 @@ const equipoFotos = [
     animation-fill-mode: backwards;
   }
 
-  .team-carousel-dot {
-    animation: team-dot 24s infinite;
-    animation-fill-mode: backwards;
-  }
-
   @keyframes team-fade {
     0%,
     100% {
@@ -249,33 +233,12 @@ const equipoFotos = [
     }
   }
 
-  @keyframes team-dot {
-    0%,
-    100% {
-      background-color: rgb(247 50 1 / 0.2);
-      transform: scale(1);
-    }
-    2%,
-    14% {
-      background-color: rgb(247 50 1 / 1);
-      transform: scale(1.3);
-    }
-    16.6% {
-      background-color: rgb(247 50 1 / 0.2);
-      transform: scale(1);
-    }
-  }
-
   @media (prefers-reduced-motion: reduce) {
-    .team-carousel-slide,
-    .team-carousel-dot {
+    .team-carousel-slide {
       animation: none;
     }
     .team-carousel-slide:first-child {
       opacity: 1;
-    }
-    .team-carousel-dot:first-child {
-      background-color: rgb(247 50 1 / 1);
     }
   }
 </style>
