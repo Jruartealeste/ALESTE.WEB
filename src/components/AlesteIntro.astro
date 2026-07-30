@@ -1,0 +1,106 @@
+---
+// AlesteIntro.astro — intro de marca a pantalla completa (3,5 s), sin dependencias.
+// Uso:  <AlesteIntro />   |   <AlesteIntro bg="#251426" ink="#FFFFFF" once={false} />
+const { bg = '#FFFFFF', ink = '#F73201', once = true } = Astro.props;
+---
+
+<div id="aleste-intro" data-once={once ? '1' : '0'} aria-hidden="true">
+  <div class="ai-glow"></div>
+  <div class="ai-logo">
+    <svg viewBox="163 98 268 33" width="760" height="93.6">
+      <path d="M202.73,126.078l-2.581-4.588h-22.329l-2.437,4.588h-8.745l13.835-25.125h16.846l14.659,25.125h-9.247ZM191.87,106.759h-6.093l-4.874,9.068h16.093l-5.125-9.068Z"></path>
+      <path d="M214.02,101.06h8.566v18.817h18.996v6.236h-27.562v-25.053Z"></path>
+      <path d="M244.198,100.989h81.145v5.699h-72.687v3.728h72.221v5.735h-72.221v4.122h73.045v5.842h-81.504v-25.125Z"></path>
+      <path d="M344.554,126.58c-2.724-.024-5.102-.239-7.132-.645-2.031-.43-3.596-.95-4.695-1.559-1.099-.609-1.978-1.344-2.634-2.204-.657-.86-1.069-1.649-1.236-2.365-.192-.693-.287-1.434-.287-2.222v-.358h8.924c.143,1.84,1.23,3.035,3.262,3.584,1.075.263,2.437.394,4.086.394h1.971c1.29,0,2.485-.072,3.584-.215,1.123-.143,1.947-.346,2.473-.609.502-.287.836-.573,1.004-.86.167-.287.262-.609.287-.968,0-.549-.156-.979-.466-1.29-.311-.31-.992-.585-2.043-.824-1.099-.238-2.652-.382-4.659-.43l-2.688-.036-2.043-.072c-8.888-.215-13.333-2.664-13.333-7.347v-.287c.024-.812.131-1.565.323-2.258.238-.669.687-1.35,1.344-2.043.657-.693,1.523-1.266,2.599-1.72,1.075-.478,2.509-.872,4.301-1.183,1.816-.31,3.93-.466,6.344-.466h2.509c2.509,0,4.719.161,6.631.484,1.911.323,3.434.729,4.57,1.219,1.135.49,2.061,1.093,2.778,1.81.74.741,1.242,1.458,1.505,2.151.262.717.394,1.469.394,2.258v.358h-8.889c-.048-.287-.12-.513-.215-.681-.072-.191-.269-.448-.591-.771-.323-.323-.735-.579-1.237-.771-.55-.215-1.314-.394-2.294-.538-1.052-.167-2.103-.251-3.154-.251h-1.29c-1.864,0-3.346.12-4.444.358-1.099.239-1.769.49-2.007.753-.239.239-.358.586-.358,1.039.023.43.155.777.394,1.039.262.287.878.544,1.846.771.968.227,2.335.34,4.104.34l2.007.036,2.581.036c5.09.096,8.769.735,11.039,1.918,2.27,1.183,3.405,3.029,3.405,5.537v.466c0,.932-.108,1.769-.323,2.509-.239.717-.699,1.458-1.38,2.222-.681.765-1.59,1.404-2.724,1.917-1.135.514-2.694.938-4.677,1.272-1.983.334-4.289.502-6.917.502h-2.545Z"></path>
+      <path d="M376.417,126.114v-19.139h-11.756v-5.914h32.186v5.914h-11.792v19.139h-8.638Z"></path>
+      <path d="M399.391,100.953h28.888v5.699h-20.43v3.728h19.928v5.735h-19.928v4.122h20.788v5.842h-29.247v-25.125Z"></path>
+    </svg>
+  </div>
+  <div class="ai-bar"></div>
+  <div class="ai-rule"></div>
+</div>
+
+<style define:vars={{ bg, ink }}>
+  #aleste-intro {
+    position: fixed; inset: 0; z-index: 9999;
+    background: var(--bg);
+    overflow: hidden;
+    animation: ai-exit 490ms cubic-bezier(0.55,0.055,0.675,0.19) 3010ms both;
+  }
+  #aleste-intro > * { position: absolute; left: 50%; top: 46%; }
+
+  .ai-glow {
+    width: 1100px; height: 1100px; margin: -550px 0 0 -550px;
+    left: 50%; top: 46%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--ink) 28%, transparent) 0%, transparent 62%);
+    opacity: 0;
+    animation: ai-glow-in 1400ms ease-out 630ms forwards, ai-breathe 5s ease-in-out 2s infinite;
+  }
+  .ai-logo {
+    width: 760px; height: 93.6px; margin: -46.8px 0 0 -380px;
+    clip-path: inset(0 100% 0 0);
+    animation: ai-wipe 1260ms cubic-bezier(0.645,0.045,0.355,1) 490ms forwards;
+  }
+  .ai-logo svg { display: block; }
+  .ai-logo path { fill: var(--ink); }
+  .ai-bar {
+    width: 7px; height: 178px; margin: 0 0 0 -383px;
+    background: var(--ink); opacity: 0;
+    animation: ai-travel 1260ms cubic-bezier(0.645,0.045,0.355,1) 490ms both;
+  }
+  #aleste-intro > .ai-rule {
+    top: calc(46% + 92px); width: 0; height: 3px; border-radius: 2px;
+    background: var(--ink); opacity: 0.9;
+    transform: translateX(-50%);
+    animation: ai-rule 770ms cubic-bezier(0.215,0.61,0.355,1) 1750ms forwards;
+  }
+
+  @keyframes ai-wipe {
+    from { clip-path: inset(0 100% 0 0); transform: scale(1.03); }
+    to   { clip-path: inset(0 0 0 0);    transform: scale(1); }
+  }
+  @keyframes ai-travel {
+    0%   { transform: translate(0, -50%); opacity: 1; }
+    88%  { transform: translate(780px, -50%); opacity: 1; }
+    100% { transform: translate(780px, -50%); opacity: 0; }
+  }
+  @keyframes ai-rule  { to { width: 640px; } }
+  @keyframes ai-glow-in { to { opacity: 0.14; } }
+  @keyframes ai-breathe {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.04); }
+  }
+  @keyframes ai-exit {
+    from { opacity: 1; transform: scale(1); }
+    to   { opacity: 0; transform: scale(1.03); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #aleste-intro, #aleste-intro * { animation-duration: 1ms !important; animation-delay: 0ms !important; }
+  }
+  /* El lienzo de referencia es 1920px de ancho: escalado proporcional en pantallas chicas */
+  @media (max-width: 1280px) {
+    #aleste-intro > * { zoom: 0.62; }
+  }
+  @media (max-width: 720px) {
+    #aleste-intro > * { zoom: 0.42; }
+  }
+</style>
+
+<script>
+  const el = document.getElementById('aleste-intro');
+  if (el) {
+    const once = el.dataset.once === '1';
+    const seen = once && sessionStorage.getItem('aleste-intro-seen') === '1';
+    if (seen) {
+      el.remove();
+    } else {
+      sessionStorage.setItem('aleste-intro-seen', '1');
+      document.body.style.overflow = 'hidden';
+      const done = () => { el.remove(); document.body.style.overflow = ''; };
+      setTimeout(done, 3500);
+      el.addEventListener('click', done);
+      window.addEventListener('keydown', done, { once: true });
+    }
+  }
+</script>
