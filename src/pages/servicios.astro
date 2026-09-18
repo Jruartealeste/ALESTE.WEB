@@ -11,24 +11,38 @@ const services = servicios;
 >
   <div class="bg-white">
   <section class="mx-auto max-w-6xl px-6 py-20">
-    <h1 class="text-3xl font-bold text-heading">Lo que hacemos</h1>
-    <p class="mt-4 max-w-2xl text-body">
-      Servicios pensados para trabajar en conjunto: de la estrategia a la pieza final, sin perder de vista la marca.
-    </p>
+    <div data-svc-head class="opacity-0 translate-y-[18px] transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]">
+      <h1 class="text-3xl font-bold text-heading">Lo que hacemos</h1>
+      <div data-svc-rule class="mt-[14px] h-[3px] w-0 rounded-sm bg-brand transition-[width] duration-[900ms] delay-200 ease-[cubic-bezier(0.22,1,0.36,1)]"></div>
+      <p class="mt-4 max-w-2xl text-body">
+        Servicios pensados para trabajar en conjunto: de la estrategia a la pieza final, sin perder de vista la marca.
+      </p>
+    </div>
 
     <div class="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
       {services.map((service) => (
-        <article class="group relative flex flex-col overflow-hidden rounded-2xl border border-black/5 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_32px_-16px_rgba(247,50,1,0.18)] transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-1 hover:shadow-[0_4px_8px_rgba(0,0,0,0.06),0_20px_40px_-16px_rgba(247,50,1,0.28)]">
-          <div class="flex h-40 items-center justify-center bg-brand/5 p-6">
-            <img
-              src={service.illustration}
-              alt={`Ilustración ${service.title}`}
-              class="h-full w-full object-contain transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:scale-105"
-              loading="lazy"
-            />
+        <article
+          data-svc-card
+          class="group relative flex translate-y-7 scale-[0.985] flex-col overflow-hidden rounded-2xl border border-black/5 bg-white opacity-0 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_32px_-16px_rgba(247,50,1,0.18)] transition-[opacity,transform,box-shadow] duration-[650ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-1.5 hover:shadow-[0_4px_8px_rgba(0,0,0,0.06),0_20px_40px_-16px_rgba(247,50,1,0.28)]"
+        >
+          <div class="relative flex h-40 items-center justify-center overflow-hidden bg-brand/5 p-6">
+            <div
+              data-svc-glow
+              class="pointer-events-none absolute -inset-[30%] scale-[0.85] opacity-0 transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:scale-100 group-hover:opacity-100"
+              style="background: radial-gradient(circle at 50% 55%, rgba(247,50,1,0.16), rgba(247,50,1,0) 62%);"
+            ></div>
+            <div data-svc-float class="relative flex h-full w-full items-center justify-center">
+              <img
+                data-svc-img
+                src={service.illustration}
+                alt={`Ilustración ${service.title}`}
+                class="h-full w-full object-contain transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:scale-[1.04]"
+                loading="lazy"
+              />
+            </div>
           </div>
           <div class="flex flex-col gap-3 p-7">
-            <h2 class="border-b border-black/5 pb-[10px] text-xl font-bold text-heading">{service.title}</h2>
+            <h2 class="border-b border-black/5 pb-[10px] text-xl font-bold text-heading transition-[color] duration-200 group-hover:text-brand">{service.title}</h2>
             <p class="text-[15px] leading-relaxed text-body">{service.bajada}</p>
           </div>
         </article>
@@ -37,3 +51,202 @@ const services = servicios;
   </section>
   </div>
 </Layout>
+
+<style>
+  @keyframes svcFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-9px); }
+  }
+
+  [data-svc-float] {
+    animation: svcFloat 4.2s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-svc-float] { animation: none; }
+    [data-svc-card] { opacity: 1 !important; transform: none !important; }
+    [data-svc-head] { opacity: 1 !important; transform: none !important; }
+  }
+</style>
+
+<script>
+  const REVEAL_STAGGER = 90; // ms entre tarjetas de una misma fila
+  const ICON_STAGGER = 80;   // ms entre piezas de la ilustración
+
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // -- Título + regla ------------------------------------------------------
+  const head = document.querySelector('[data-svc-head]') as HTMLElement | null;
+  const rule = document.querySelector('[data-svc-rule]') as HTMLElement | null;
+  requestAnimationFrame(() => {
+    if (head) { head.style.opacity = '1'; head.style.transform = 'none'; }
+    if (rule) rule.style.width = '96px';
+  });
+
+  const cards = Array.from(document.querySelectorAll('[data-svc-card]')) as HTMLElement[];
+
+  // -- Entrada por scroll, escalonada ---------------------------------------
+  const reveal = (card: HTMLElement, i: number) => {
+    card.style.transitionDelay = `${(i % 3) * REVEAL_STAGGER}ms`;
+    card.style.opacity = '1';
+    card.style.transform = 'none';
+    const float = card.querySelector('[data-svc-float]') as HTMLElement | null;
+    if (float && !reduce) float.style.animationDelay = `${i * 0.35}s`;
+  };
+
+  if (reduce || !('IntersectionObserver' in window)) {
+    cards.forEach(reveal);
+  } else {
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (!e.isIntersecting) return;
+          reveal(e.target as HTMLElement, cards.indexOf(e.target as HTMLElement));
+          io.unobserve(e.target);
+        });
+      },
+      { threshold: 0.18, rootMargin: '0px 0px -8% 0px' }
+    );
+    cards.forEach((c) => io.observe(c));
+  }
+
+  // -- Ilustraciones: inline del SVG + animación por pieza en hover --------
+  type CardState = { groups: SVGGElement[]; connectors: SVGElement[]; timers: number[] };
+  const state = new WeakMap<HTMLElement, CardState>();
+
+  async function inlineSvg(card: HTMLElement) {
+    const img = card.querySelector('[data-svc-img]') as HTMLImageElement | null;
+    if (!img) return;
+    try {
+      const res = await fetch(img.getAttribute('src')!);
+      const text = await res.text();
+      const doc = new DOMParser().parseFromString(text, 'image/svg+xml');
+      const svg = doc.querySelector('svg');
+      if (!svg || doc.querySelector('parsererror')) return;
+
+      svg.setAttribute('role', 'img');
+      svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+      svg.setAttribute('data-svc-img', 'true');
+      svg.classList.add(
+        'h-full', 'w-full', 'transition-transform', 'duration-300',
+        'ease-[cubic-bezier(0.34,1.56,0.64,1)]', 'group-hover:scale-[1.04]'
+      );
+      (svg as unknown as HTMLElement).style.overflow = 'visible';
+      img.replaceWith(svg as unknown as Node);
+      requestAnimationFrame(() => buildGroups(card, svg as SVGSVGElement));
+    } catch {
+      /* si falla el fetch queda el <img> original */
+    }
+  }
+
+  // Agrupa las piezas del SVG por cercanía (cada logo/objeto = un grupo animable).
+  function buildGroups(card: HTMLElement, svg: SVGSVGElement) {
+    const vb = svg.viewBox.baseVal;
+    if (!vb || !vb.width) return;
+
+    const diag = Math.hypot(vb.width, vb.height);
+    const pad = diag * 0.022;
+    const link = diag * 0.075;
+
+    const shapes = Array.from(
+      svg.querySelectorAll('path, rect, circle, ellipse, polygon, polyline, line')
+    ) as SVGGraphicsElement[];
+
+    const items = shapes.flatMap((el) => {
+      let b: DOMRect;
+      try { b = el.getBBox(); } catch { return []; }
+      if (!b || (!b.width && !b.height)) return [];
+      const long = Math.max(b.width, b.height);
+      return [{
+        el,
+        b,
+        connector: long > diag * 0.45, // trazos/líneas largas: onda de opacidad
+        cx: b.x + b.width / 2,
+        cy: b.y + b.height / 2,
+      }];
+    });
+    if (!items.length) return;
+
+    const blobs = items.filter((i) => !i.connector);
+    const parent = blobs.map((_, i) => i);
+    const find = (i: number): number => (parent[i] === i ? i : (parent[i] = find(parent[i])));
+    for (let i = 0; i < blobs.length; i++) {
+      for (let j = i + 1; j < blobs.length; j++) {
+        const d = Math.hypot(blobs[i].cx - blobs[j].cx, blobs[i].cy - blobs[j].cy);
+        if (d < link + pad) parent[find(i)] = find(j);
+      }
+    }
+
+    const map = new Map<number, typeof blobs>();
+    blobs.forEach((it, i) => {
+      const root = find(i);
+      if (!map.has(root)) map.set(root, []);
+      map.get(root)!.push(it);
+    });
+
+    const groups: { g: SVGGElement; key: number }[] = [];
+    map.forEach((members) => {
+      const first = members[0].el;
+      const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      first.parentNode!.insertBefore(g, first);
+      members.forEach((m) => g.appendChild(m.el));
+      g.style.transformBox = 'fill-box';
+      g.style.transformOrigin = 'center';
+      g.style.transition = 'transform 460ms cubic-bezier(0.34,1.56,0.64,1)';
+      const minX = Math.min(...members.map((m) => m.b.x));
+      const minY = Math.min(...members.map((m) => m.b.y));
+      groups.push({ g, key: minX + minY });
+    });
+    groups.sort((a, b) => a.key - b.key);
+
+    const connectors = items
+      .filter((i) => i.connector)
+      .map((i) => {
+        (i.el as unknown as HTMLElement).style.transition = 'opacity 420ms ease-out';
+        return i.el as unknown as SVGElement;
+      });
+
+    state.set(card, { groups: groups.map((x) => x.g), connectors, timers: [] });
+  }
+
+  function stopWave(card: HTMLElement) {
+    const s = state.get(card);
+    if (!s) return;
+    s.timers.forEach(clearTimeout);
+    s.timers = [];
+    s.groups.forEach((g) => { g.style.transform = 'none'; });
+    s.connectors.forEach((el) => { (el as unknown as HTMLElement).style.opacity = '1'; });
+  }
+
+  function playWave(card: HTMLElement) {
+    if (reduce) return;
+    const s = state.get(card);
+    if (!s) return;
+    stopWave(card);
+    s.groups.forEach((g, i) => {
+      s.timers.push(
+        window.setTimeout(() => {
+          g.style.transform = 'scale(1.16) rotate(-2deg)';
+          s.timers.push(window.setTimeout(() => { g.style.transform = 'none'; }, 300));
+        }, i * ICON_STAGGER)
+      );
+    });
+    s.connectors.forEach((el, i) => {
+      const node = el as unknown as HTMLElement;
+      s.timers.push(
+        window.setTimeout(() => {
+          node.style.opacity = '0.25';
+          s.timers.push(window.setTimeout(() => { node.style.opacity = '1'; }, 260));
+        }, i * ICON_STAGGER * 0.6)
+      );
+    });
+  }
+
+  cards.forEach((card) => {
+    inlineSvg(card);
+    card.addEventListener('mouseenter', () => playWave(card));
+    card.addEventListener('mouseleave', () => stopWave(card));
+    card.addEventListener('focusin', () => playWave(card));
+    card.addEventListener('focusout', () => stopWave(card));
+  });
+</script>

@@ -10,8 +10,10 @@ const navItems = [
 const currentPath = new URL(Astro.request.url).pathname;
 ---
 
-<header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm shadow-[0_1px_0_0_rgba(0,0,0,0.06),0_8px_24px_-12px_rgba(247,50,1,0.15)]">
-  <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+<header class="fixed inset-x-0 top-0 z-50 border-b border-white/40 bg-white/65 backdrop-blur-xl backdrop-saturate-150 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.7),0_1px_0_0_rgba(0,0,0,0.04),0_16px_40px_-20px_rgba(247,50,1,0.35)]">
+  <div class="pointer-events-none absolute inset-x-0 top-0 h-full bg-gradient-to-b from-white/35 via-white/5 to-transparent"></div>
+
+  <div class="relative mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
     <a
       href="/"
       class="transition-[opacity] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:opacity-70 focus-visible:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
@@ -28,7 +30,7 @@ const currentPath = new URL(Astro.request.url).pathname;
           class:list={[
             'text-[15px] font-medium transition-[color,transform] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)]',
             'hover:text-brand hover:-translate-y-px focus-visible:text-brand focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand active:translate-y-0',
-            currentPath === item.href ? 'text-brand' : 'text-body',
+            currentPath === item.href ? 'text-brand' : 'text-heading',
           ]}
         >
           {item.label}
@@ -44,9 +46,9 @@ const currentPath = new URL(Astro.request.url).pathname;
       aria-controls="mobile-menu"
       class="flex flex-col items-center justify-center gap-[5px] p-2 md:hidden focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
     >
-      <span class="menu-bar block h-0.5 w-6 bg-body transition-[transform,opacity] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)]"></span>
-      <span class="menu-bar block h-0.5 w-6 bg-body transition-[transform,opacity] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)]"></span>
-      <span class="menu-bar block h-0.5 w-6 bg-body transition-[transform,opacity] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)]"></span>
+      <span class="menu-bar block h-0.5 w-6 bg-heading transition-[transform,opacity] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)]"></span>
+      <span class="menu-bar block h-0.5 w-6 bg-heading transition-[transform,opacity] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)]"></span>
+      <span class="menu-bar block h-0.5 w-6 bg-heading transition-[transform,opacity] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)]"></span>
     </button>
   </div>
 
@@ -54,7 +56,7 @@ const currentPath = new URL(Astro.request.url).pathname;
   <div
     id="mobile-menu"
     aria-hidden="true"
-    class="overflow-hidden md:hidden"
+    class="relative overflow-hidden md:hidden"
     style="max-height: 0; transition: max-height 0.3s cubic-bezier(0.4,0,0.2,1);"
   >
     <nav class="flex flex-col border-t border-black/6 px-6 py-4 gap-1">
@@ -65,7 +67,7 @@ const currentPath = new URL(Astro.request.url).pathname;
           class:list={[
             'py-3 text-[15px] font-medium transition-[color,transform] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)]',
             'hover:text-brand focus-visible:text-brand focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand active:translate-y-px',
-            currentPath === item.href ? 'text-brand' : 'text-body',
+            currentPath === item.href ? 'text-brand' : 'text-heading',
           ]}
         >
           {item.label}
